@@ -98,6 +98,7 @@ export default {
   margin: 10px 15px 0 15px;
   border-radius: 10px;
   transition: 0.3s;
+  cursor: pointer;
 }
 
 .sidebar-button:hover {
