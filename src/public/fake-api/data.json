@@ -30,17 +30,32 @@
         {
           "id": 1,
           "name": "Cafe Americano",
+          "category": "Coffe",
           "price": 6
         },
         {
           "id": 2,
           "name": "Cappuccino",
+          "category": "Coffe",
           "price": 8
         },
         {
           "id": 3,
           "name": "Sandwich de Pollo",
+          "category": "Sandwich",
           "price": 9
+        },
+        {
+          "id": 4,
+          "name": "Te de frutos rojos",
+          "category": "Teas",
+          "price": 6
+        },
+        {
+          "id": 5,
+          "name": "Triple Caliente de Pollo",
+          "category": "Sandwich",
+          "price": 12
         }
       ]
     },

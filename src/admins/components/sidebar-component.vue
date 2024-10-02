@@ -78,7 +78,7 @@ export default {
 }
 
 .sidebar-header {
-  padding: 100px 0 20px 0;
+  padding-top: 80px;
   text-align: center;
   font-weight: 600;
   font-size: 1.3rem;
@@ -88,10 +88,10 @@ export default {
 .sidebar-button {
   width: 88%;
   text-align: left;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-family: 'Red-hat-display', sans-serif;
   font-weight: 100;
-  padding: 20px 0 20px 20px;
+  padding: 15px 0 15px 20px;
   color: #F6F5FA;
   background-color: transparent;
   border: none;
