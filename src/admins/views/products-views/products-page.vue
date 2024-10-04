@@ -79,9 +79,32 @@ export default {
     editProduct(product) {
       this.$router.push(`/${this.restaurantName}/${this.userRole}/product/${product.id}`);
     },
-    deleteProduct() {
+    async deleteProduct(productId) {
+      try {
+        const response = await productsService.deleteProduct(this.restaurantName, productId);
 
+        if (response.success) {
+          alert(response.message || "Product deleted successfully");
+
+          // Recargar la lista de productos después de eliminar
+          await this.fetchProducts();
+        } else {
+          alert(response.message || "Failed to delete product");
+        }
+      } catch (error) {
+        console.error('Error during product deletion process:', error);
+        alert('An error occurred: ' + error.message);
+      }
     },
+
+    async fetchProducts(){
+      try {
+        const response = await productsService.getProductsByRestaurant(this.restaurantName);
+        this.products = response.data;
+      } catch (error) {
+        console.error('Error fetching products: ', error)
+      }
+    }
   }
 }
 </script>

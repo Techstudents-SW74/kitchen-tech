@@ -5,8 +5,23 @@
       <header-component :restaurant-name="restaurantName" :role="userRole" class="header" />
       <div class="page-container">
         <div class="page-header">
-          <p class="title">New Product</p>
+          <p class="title">{{ isEdit? 'Edit Product' : 'Add New Product' }}</p>
         </div>
+        <form @submit.prevent="submitProduct">
+          <div>
+            <label for="name">Product Name</label>
+            <input type="text" v-model="product.name" required/>
+          </div>
+          <div>
+            <label for="category">Product Category</label>
+            <input type="text" v-model="product.category" required/>
+          </div>
+          <div>
+            <label for="price">Product Price</label>
+            <input type="text" v-model="product.price" required/>
+          </div>
+          <button type="submit">{{ isEdit? 'Save Changes' : 'Add Product'}}</button>
+        </form>
       </div>
     </div>
   </div>
@@ -15,6 +30,7 @@
 <script>
 import HeaderComponent from "@/admins/components/header-component.vue";
 import SidebarComponent from "@/admins/components/sidebar-component.vue";
+import { productsService } from "@/public/services/productsService";
 
 export default {
   components: {
@@ -25,13 +41,73 @@ export default {
     return {
       restaurantName: '',
       userRole: '',
+      product: {
+        id: null,
+        name: '',
+        category: '',
+        price: null,
+      },
+      isEdit: false,
     };
   },
-  mounted() {
+  async mounted() {
     const userData = JSON.parse(localStorage.getItem('userData'));
     if (userData) {
       this.restaurantName = userData['business-name'];
       this.userRole = userData.role;
+    }
+
+    if(this.$route.params.productId){
+      this.isEdit = true;
+      await this.loadProduct();
+    }
+  },
+  methods: {
+    async loadProduct() {
+      try {
+        const products = await productsService.getProductsByRestaurant(this.restaurantName);
+        const product = products.find((p) => p.id === parseInt(this.$route.params.productId));
+
+        if (product) {
+          this.product = product;
+        }
+
+      } catch (error) {
+        console.error("Failed to load product", error);
+      }
+    },
+    async submitProduct() {
+      this.product.price = parseFloat(this.product.price);
+
+      if (this.isEdit) {
+        try {
+          const response = await productsService.updateProduct(this.restaurantName, this.product);
+
+          if (response && response.success) {
+            this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
+            alert('Product updated successfully.');
+          } else {
+            alert(response.message || 'Update failed');
+          }
+        } catch (error) {
+          console.error('Error during product updating process:', error);
+          alert('An error occurred: ' + error.message);
+        }
+      } else {
+        try {
+          const response = await productsService.addProduct(this.restaurantName, this.product);
+
+          if (response && response.success) {
+            this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
+            alert('Product updated successfully.');
+          } else {
+            alert(response.message || 'Creation failed');
+          }
+        } catch (error) {
+          console.error('Error during product creation process:', error);
+          alert('An error occurred: ' + error.message);
+        }
+      }
     }
   }
 }
