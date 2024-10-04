@@ -7,21 +7,27 @@
         <div class="page-header">
           <p class="title">{{ isEdit? 'Edit Product' : 'Add New Product' }}</p>
         </div>
-        <form @submit.prevent="submitProduct">
-          <div>
-            <label for="name">Product Name</label>
-            <input type="text" v-model="product.name" required/>
+        <div class="card">
+          <form @submit.prevent="submitProduct">
+            <div class="form-field">
+              <label for="name">Product Name</label>
+              <input type="text" v-model="product.name" required/>
+
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="category">Product Category</label>
+                  <input type="text" v-model="product.category" required/>
+                </div>
+
+                <div class="form-field">
+                  <label for="price">Product Price</label>
+                  <input type="text" v-model="product.price" required/>
+                </div>
+              </div>
+            </div>
+            <button type="submit">{{ isEdit? 'Save Changes' : 'Add Product'}}</button>
+          </form>
           </div>
-          <div>
-            <label for="category">Product Category</label>
-            <input type="text" v-model="product.category" required/>
-          </div>
-          <div>
-            <label for="price">Product Price</label>
-            <input type="text" v-model="product.price" required/>
-          </div>
-          <button type="submit">{{ isEdit? 'Save Changes' : 'Add Product'}}</button>
-        </form>
       </div>
     </div>
   </div>
@@ -146,5 +152,55 @@ export default {
   background-color: #F6F5FA; /* Fondo blanco para la zona de contenido */
   height: calc(100vh - 100px); /* Ajusta el alto para evitar desbordamientos */
   overflow-y: auto; /* Permite el scroll si el contenido es muy largo */
+  font-family: 'Red Hat Display', sans-serif;
+}
+
+.title {
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+.card {
+  background: #D3D2E5;
+  padding: 30px 50px;
+  border-radius: 5px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  margin: 20px 0;
+}
+.form-field {
+  flex: 1;
+}
+.form-field label {
+  font-weight: 700;
+  color: #31304A;
+}
+.form-field input {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  color: #31304A;
+  margin: 10px 0;
+  font-weight: 500;
+  box-sizing: border-box;
+  background: #F6F5FA;
+}
+
+button{
+  width: 100%;
+  margin: 0 0 16px 0;
+  color: #F6F5FA;
+  padding: 24px;
+  background: #31304A;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
 }
 </style>

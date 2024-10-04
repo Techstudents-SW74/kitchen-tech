@@ -196,14 +196,6 @@ span {
   margin-left: 5px;
 }
 
-.dropdown-form-field {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-  width: 100%;
-  font-weight: 700;
-  color: #31304A;
-}
 .dropdown-form-field select {
   width: 100%;
   padding: 12px;

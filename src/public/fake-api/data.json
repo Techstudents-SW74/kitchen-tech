@@ -44,6 +44,18 @@
           "name": "Triple Caliente de Pollo",
           "category": "Sandwich",
           "price": 12
+        },
+        {
+          "id": 6,
+          "name": "Torta de Chocolate",
+          "category": "Desserts",
+          "price": 10
+        },
+        {
+          "id": 7,
+          "name": "Menu Ejecutivo",
+          "category": "Lunch",
+          "price": 20
         }
       ]
     },
@@ -62,6 +74,22 @@
       "email": "admin@tanta.com",
       "phone": "999999999",
       "password": "123123",
+      "waiters": [],
+      "products": [
+        {
+          "id": 1,
+          "name": "Lomo Saltado",
+          "category": "Almuerzo",
+          "price": 31
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "business-name": "KFC",
+      "email": "admin@kfc.com",
+      "phone": "929292929",
+      "password": "123456",
       "waiters": [],
       "products": []
     }
