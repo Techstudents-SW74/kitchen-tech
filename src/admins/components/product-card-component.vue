@@ -28,7 +28,7 @@
   width: 95%;
   margin:10px;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
   background-color: #D3D2E5;
   justify-content: space-between;
   font-family: 'Red-hat-display', sans-serif;
@@ -51,7 +51,7 @@
   font-weight: 600;
 }
 .card-buttons button {
-  background: #5E5E99;
+  background: #31304A;
   color: #F6F5FA;
   border: none;
   border-radius: 5px;

@@ -28,30 +28,6 @@
       ],
       "products": [
         {
-          "id": 2,
-          "name": "Cappuccino",
-          "category": "Coffe",
-          "price": 8
-        },
-        {
-          "id": 3,
-          "name": "Sandwich de Pollo",
-          "category": "Sandwich",
-          "price": 9
-        },
-        {
-          "id": 5,
-          "name": "Triple Caliente de Pollo",
-          "category": "Sandwich",
-          "price": 12
-        },
-        {
-          "id": 6,
-          "name": "Torta de Chocolate",
-          "category": "Desserts",
-          "price": 10
-        },
-        {
           "id": 7,
           "name": "Menu Ejecutivo",
           "category": "Lunch",
@@ -85,7 +61,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "4",
       "business-name": "KFC",
       "email": "admin@kfc.com",
       "phone": "929292929",

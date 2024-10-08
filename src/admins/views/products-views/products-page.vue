@@ -83,10 +83,8 @@ export default {
       try {
         const response = await productsService.deleteProduct(this.restaurantName, productId);
 
-        if (response.success) {
+        if (confirm("Are you sure you want to remove this product")) {
           alert(response.message || "Product deleted successfully");
-
-          // Recargar la lista de productos después de eliminar
           await this.fetchProducts();
         } else {
           alert(response.message || "Failed to delete product");
@@ -151,18 +149,20 @@ export default {
   margin-bottom: 20px;
 }
 .search-bar {
-  border: #31304A 1px solid;
+  border: none;
+  background: #D3D2E5;
   border-radius: 5px;
   padding: 15px;
   margin-left: 10px;
   width: 80%;
 }
 .add-button {
-  background-color: #5E5E99;
-  color: #F6F5FA;
+  background-color: #D3D2E5;
+  color: #31304A;
   border: none;
   padding: 15px 30px;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: 800;
 }
 </style>
