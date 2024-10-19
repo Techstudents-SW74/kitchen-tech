@@ -79,11 +79,12 @@ export default {
     updateItemTotal(index) {
       const item = this.localCart[index];
 
+      // Asignar un valor predeterminado si el input está vacío o nulo
       if (item.quantity === null || item.quantity === "") {
-        item.quantity = 1; // Valor por defecto
+        item.quantity = 1; // Valor por defecto para cantidad
       }
       if (item.price === null || item.price === "") {
-        item.price = 0; // Valor por defecto
+        item.price = this.products.find(p => p.id === item.id)?.price || 0; // Precio original del producto como valor predeterminado
       }
 
       const total = item.price * item.quantity;

@@ -160,6 +160,7 @@ favorite-product-header-component {
   justify-content: space-between; /* Alinea la barra de búsqueda y el botón de edición */
   margin-bottom: 20px; /* Separación entre el header y la cuadrícula de productos */
 }
+
 .left-section {
   flex: 3; /* Hacer que la cuadrícula ocupe más espacio */
 
@@ -169,12 +170,7 @@ favorite-product-header-component {
   display: flex;
   flex-direction: column;
   justify-content: space-between; /* Para evitar la compresión vertical */
+  min-width: 350px;
+  min-height: 690px;
 }
-
-product-grid-component {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Mejorar la cuadrícula */
-  gap: 10px;
-}
-
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="products-grid">
     <div
-        v-for="(slot, index) in 40"
+        v-for="(slot, index) in 30"
         :key="index"
         class="product-slot"
         @click="isEditMode ? selectFavoriteSlot(index) : null"
@@ -50,17 +50,18 @@ export default {
 <style scoped>
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  grid-template-columns: repeat(5, minmax(80px, 110px));
   gap: 10px;
   max-width: 1000px;
   width: 100%;
   margin: 30px auto;
   align-items: center;
+  justify-content: center;
 }
 .product-slot {
   border: 1px dashed #31304A;
   border-radius: 5px;
-  height: 100px;
+  height: 90px;
   max-width: 120px;
   display: flex;
   align-items: center;
