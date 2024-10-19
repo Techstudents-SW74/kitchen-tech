@@ -64,6 +64,7 @@ export default {
   },
   methods: {
     async loadProducts() {
+      console.log('Restaurant Name: ', this.restaurantName);
       try {
         const products = await productsService.getProductsByRestaurant(this.restaurantName);
         this.products = products;

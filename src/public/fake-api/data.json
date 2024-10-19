@@ -44,6 +44,12 @@
           "name": "Sandwich de Pollo",
           "category": "Sandwiches",
           "price": 9
+        },
+        {
+          "id": 10,
+          "name": "Té de frutos rojos",
+          "category": "Teas",
+          "price": 8
         }
       ]
     },

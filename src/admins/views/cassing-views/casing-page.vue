@@ -6,9 +6,13 @@
       <div class="page-container">
         <div class="left-section">
           <favorite-product-header-component
+              v-if="restaurantName"
               :is-edit-mode="isEditMode"
+              :restaurant-name="restaurantName"
+              :cart="cart"
               @toggle-edit-mode="toggleEditMode"
               @search-products="searchProducts"
+              @add-to-cart="addProductToCart"
           />
           <product-grid-component
               :favorite-products="favoriteProducts"
@@ -26,6 +30,8 @@
               @add-customer="addCustomer"
               @save-sale="saveSale"
               @charge="charge"
+              @update-cart="handleUpdateCart"
+              @update-summary="handleUpdateSummary"
           />
         </div>
       </div>
@@ -50,15 +56,22 @@ export default {
   },
   data() {
     return {
+      restaurantName: '',
+      userRole: '',
       cart: [],
       subtotal: 0,
       igv: 0,
       total: 0,
       isEditMode: false,
-      restaurantName: 'My Restaurant',
-      userRole: 'Admin',
-      favoriteProducts: Array(24).fill(null) // Productos favoritos inicializados como vacíos
+      favoriteProducts: Array(40).fill(null) // Productos favoritos inicializados como vacíos
     };
+  },
+  mounted() {
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    if (userData) {
+      this.restaurantName = userData['business-name'];
+      this.userRole = userData.role;
+    }
   },
   methods: {
     openProductList() {
@@ -71,6 +84,29 @@ export default {
     },
     addCustomer() {
       // Lógica para agregar un cliente
+    },
+
+    addProductToCart(product) {
+      const existingItem = this.cart.find(item => item.id === product.id);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        this.cart.push({ ...product, quantity: 1 });
+      }
+      this.updateCartSummary();
+    },
+    updateCartSummary() {
+      this.subtotal = this.cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+      this.igv = this.subtotal * 0.18; // Calcular IGV (18%)
+      this.total = this.subtotal;
+    },
+    handleUpdateCart(updatedCart) {
+      this.cart = updatedCart;
+    },
+    handleUpdateSummary({ subtotal, igv, total }) {
+      this.subtotal = subtotal;
+      this.igv = igv;
+      this.total = total;
     },
     saveSale() {
       // Lógica para guardar la venta
