@@ -158,11 +158,20 @@ export default {
 .title {
   font-weight: 800;
   font-size: 1.5rem;
+  max-width: 1000px;
+  margin: 20px auto;
+  padding-bottom: 10px;
+  color: #31304A;
 }
 .card {
   background: #D3D2E5;
   padding: 30px 50px;
   border-radius: 5px;
+  max-width: 1000px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  gap: 10px;
 }
 
 .form-row {

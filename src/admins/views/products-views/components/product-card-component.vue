@@ -25,15 +25,16 @@
 <style scoped>
 .product-card {
   display: flex;
-  width: 95%;
-  margin:10px;
+  max-width: 100%;
   padding: 20px;
   border-radius: 5px;
   background-color: #D3D2E5;
+  color: #31304A;
   justify-content: space-between;
   font-family: 'Red-hat-display', sans-serif;
   align-items: center;
   align-content: center;
+  margin: 0 auto 20px;
 }
 .product-name {
   font-weight: 700;

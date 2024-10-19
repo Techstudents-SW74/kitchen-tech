@@ -32,6 +32,18 @@
           "name": "Menu Ejecutivo",
           "category": "Lunch",
           "price": 20
+        },
+        {
+          "id": 8,
+          "name": "Torta de Chocolate",
+          "category": "Desserts",
+          "price": 10
+        },
+        {
+          "id": 9,
+          "name": "Sandwich de Pollo",
+          "category": "Sandwiches",
+          "price": 9
         }
       ]
     },
