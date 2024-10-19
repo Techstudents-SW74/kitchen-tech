@@ -3,35 +3,37 @@
     <button class="add-customer" @click="addCustomer">Add Customer</button>
 
     <div class="cart-item" v-for="(item, index) in localCart" :key="item.id">
-      <div class="item-info">
-        <span class="item-name">{{ item.name }}</span>
-
-        <input
-            type="number"
-            v-model="item.price"
-            @input="updateItemTotal(index)"
-            class="price-input"
-            min="0"
-        />
-        <input
-            type="number"
-            v-model.number="item.quantity"
-            @input="updateItemTotal(index)"
-            class="quantity-input"
-            min="1"
-        />
+      <div class="item-header">
+        <div class="item-info">
+          <span class="item-name">{{ item.name }}</span>
+          <span class="item-unit">{{ item.quantity }} Un - S/{{ item.price }}</span>
+        </div>
+        <button class="remove-button" @click="removeItem(index)">
+          <i>-</i>
+        </button>
       </div>
+      <div class="item-body">
+        <div class="input-group">
+          <label>Quantity</label>
+          <input type="number" v-model.number="item.quantity" @input="updateItemTotal(index)" min="1" />
+        </div>
 
-      <div class="item-actions">
-        <span class="item-total">S/{{ (item.price * item.quantity).toFixed(2) }}</span>
-        <button @click="removeItem(index)" class="remove-button">-</button>
+        <div class="input-group">
+          <label>Unit Price</label>
+          <input type="number" v-model="item.price" @input="updateItemTotal(index)" />
+        </div>
+
+        <div class="note-section">
+          <label>Add Note</label>
+          <textarea v-model="item.note"></textarea>
+        </div>
       </div>
     </div>
 
     <div class="footer">
       <button class="save-sale" @click="saveSale">Save Sale</button>
       <div class="summary">
-        <span>Subtotal (82%):</span>
+        <span>Subtotal:</span>
         <span>S/{{ localSubtotal.toFixed(2) }}</span>
       </div>
       <div class="summary">
@@ -59,7 +61,8 @@ export default {
       localCart: JSON.parse(JSON.stringify(this.cart)), // Copiamos el array de cart
       localSubtotal: this.subtotal,
       localIgv: this.igv,
-      localTotal: this.total
+      localTotal: this.total,
+      discountType: 'amount',
     };
   },
   methods: {
@@ -73,9 +76,19 @@ export default {
       this.$emit('charge');
     },
 
-    updateItemTotal() {
+    updateItemTotal(index) {
+      const item = this.localCart[index];
+
+      if (item.quantity === null || item.quantity === "") {
+        item.quantity = 1; // Valor por defecto
+      }
+      if (item.price === null || item.price === "") {
+        item.price = 0; // Valor por defecto
+      }
+
+      const total = item.price * item.quantity;
+      item.total = total > 0 ? total : 0;
       this.updateCartSummary();
-      this.$emit('update-cart', this.localCart); // Enviar al padre la actualización del carrito
     },
     removeItem(index) {
       this.localCart.splice(index, 1); // Remover el producto del array local
@@ -152,36 +165,89 @@ button.add-customer {
   margin: 0 20px 20px 20px;
 }
 .cart-item{
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  margin: 10px 20px;
-  border-radius: 5px;
-}
-.item-info {
-  flex: 2;
+  border-top: 1px solid #F6F5FA;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-.item-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.item-total {
-  font-weight: bold;
+  justify-content: space-between;
+  padding: 10px 20px;
 }
 
-.price-input,
-.quantity-input {
-  width: 100px;
-  padding: 5px;
-  border: 1px solid #F6F5FA;
-  border-radius: 5px;
-  font-size: 14px;
-  text-align: right;
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
+.item-info{
+  display: flex;
+  flex-direction: column;
+}
+.item-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.item-unit {
+  font-size: 0.8rem;
+}
+.remove-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  background-color: #31304A;
+  color: #F6F5FA;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  max-height: 25px;
+}
+
+.item-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: space-between;
+}
+.input-group {
+  flex-direction: column;
+  max-width: 150px;
+}
+input[type="number"]{
+  -moz-appearance: textfield;
+  appearance: textfield;
+  padding: 5px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input {
+  width: 100%;
+  max-width: 138px;
+}
+textarea {
+  resize: none;
+  width: 100%;
+}
+
+label{
+  font-size: 0.7rem;
+}
+
+.note-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+textarea {
+  width: 100%;
+  min-height: 10px;
+  max-height: 15px;
+  padding: 5px ;
+  max-width: 338px;
+}
+
 .remove-button {
   background-color: #31304A;
   color: #F6F5FA;
@@ -213,7 +279,9 @@ button.charge-button{
   display: flex;
   justify-content: space-between;
   background-color: #31304A;
-  color: white;
+  color: #F6F5FA;
+  border: none;
+  cursor: pointer;
   font-weight: 100;
   font-size: 0.8rem;
   margin-top: 20px;

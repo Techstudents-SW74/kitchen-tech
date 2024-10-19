@@ -51,7 +51,7 @@ export default {
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 15px;
+  gap: 10px;
   max-width: 1000px;
   width: 100%;
   margin: 30px auto;
@@ -77,15 +77,4 @@ export default {
   color: #31304A;
 }
 
-@media (max-width: 1024px) {
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  }
-}
 </style>

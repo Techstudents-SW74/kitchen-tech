@@ -6,6 +6,7 @@
         v-model="searchQuery"
         placeholder="Search products..."
         @input="filterProducts"
+        @focus="onSearchFocus"
     />
     <ul v-if="filteredProducts.length && searchQuery" class="dropdown">
       <li v-for="product in filteredProducts" :key="product.id" class="product-card">
@@ -51,7 +52,10 @@ export default {
     } else {
       console.error('Restaurant name is required');
     }
-
+    document.addEventListener('click', this.handleClickOutside);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleClickOutside);
   },
   methods: {
     async loadProducts() {
@@ -75,6 +79,16 @@ export default {
     },
     toggleEditMode() {
       this.$emit('toggle-edit-mode');
+    },
+    handleClickOutside(event) {
+      if (!this.$el.contains(event.target)) {
+        this.filteredProducts = [];
+      }
+    },
+    onSearchFocus() {
+      if (this.searchQuery) {
+        this.filterProducts();
+      }
     },
   },
 };
@@ -100,7 +114,6 @@ export default {
   color: #31304A;
   background-color: #D3D2E5;
 }
-
 .dropdown{
   position: absolute;
   top: 100%;
