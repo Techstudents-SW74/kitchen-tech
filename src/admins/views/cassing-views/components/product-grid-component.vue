@@ -1,10 +1,10 @@
 <template>
   <div class="products-grid">
     <div
-        v-for="(slot, index) in 40"
+        v-for="(slot, index) in 30"
         :key="index"
         class="product-slot"
-        @click="isEditMode ? selectFavoriteSlot(index) : null"
+        @click="isEditMode ? selectFavoriteSlot(index) : addFavoriteToCart(index)"
     >
       <FavoriteProductCardComponent
           v-if="favoriteProducts[index]"
@@ -13,7 +13,7 @@
       />
       <div v-else class="empty-slot">
         <button v-if="isEditMode" @click="openProductList(index)">
-          <i class="fa fa-plus"></i>
+          <i>+</i>
         </button>
       </div>
     </div>
@@ -42,6 +42,11 @@ export default {
       if (!this.favoriteProducts[index]) {
         this.openProductList(index);
       }
+    },
+    addFavoriteToCart(index) {
+      if (!this.isEditMode && this.favoriteProducts[index]) {
+        this.$emit('add-to-cart', this.favoriteProducts[index]);
+      }
     }
   }
 }
@@ -50,42 +55,32 @@ export default {
 <style scoped>
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(5, minmax(80px, 110px));
+  gap: 10px;
   max-width: 1000px;
   width: 100%;
   margin: 30px auto;
   align-items: center;
+  justify-content: center;
 }
 .product-slot {
   border: 1px dashed #31304A;
   border-radius: 5px;
-  height: 100px;
+  height: 90px;
   max-width: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .empty-slot button {
-  background: transparent;
+  background-color: transparent;
+  color: #31304A;
   border: none;
-  color: #31304A;
-  font-size: 1.2rem;
-}
-.empty-slot i {
-  font-size: 1.2rem;
-  color: #31304A;
-}
+  font-size: 1rem;
+  align-items: center;
+  align-self: center;
+  font-weight: bold;
+  cursor: pointer;
 
-@media (max-width: 1024px) {
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  }
 }
 </style>

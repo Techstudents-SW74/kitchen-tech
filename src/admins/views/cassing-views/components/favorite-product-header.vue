@@ -6,53 +6,137 @@
         v-model="searchQuery"
         placeholder="Search products..."
         @input="filterProducts"
+        @focus="onSearchFocus"
     />
-    <ul v-if="filteredProducts.length" class="dropdown">
-      <li v-for="product in filteredProducts" :key="product.id">
-        <span>{{product.name}} - S/.{{product.price}}</span>
-        <button @click="addProductToCart(product)">Add</button>
+    <ul v-if="filteredProducts.length && searchQuery" class="dropdown">
+      <li v-for="product in filteredProducts" :key="product.id" class="product-card">
+        <div class="card-content">
+          <span class="product-name">{{ product.name }}</span>
+          <span class="product-price">S/.{{ product.price }}</span>
+        </div>
+        <button @click="addProductToCart(product)" class="add-button">+</button>
       </li>
     </ul>
-    <button class="edit-button" @click="toggleEditMode">Edit</button>
+    <button class="edit-button" @click="toggleEditMode">{{ isEditMode ? 'Save' : 'Edit' }}</button>
   </div>
 </template>
 
 <script>
+import { productsService } from "@/public/services/productsService";
+
 export default {
   props: {
     isEditMode: {
       type: Boolean,
       default: false,
     },
+    restaurantName: {
+      type: String,
+      required: true,
+    },
+    cart: {
+      type: Array,
+      required: true,
+    },
+    selectedSlot: Number
   },
   data() {
     return {
       searchQuery: '',
-      filteredProducts: [],
+      products: [], // Almacenar todos los productos del restaurante
+      filteredProducts: [], // Productos filtrados por la búsqueda
     };
   },
+  mounted() {
+    if(this.restaurantName) {
+      this.loadProducts();
+    } else {
+      console.error('Restaurant name is required');
+    }
+    document.addEventListener('click', this.handleClickOutside);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleClickOutside);
+  },
   methods: {
-    filterProducts() {
-      const query = this.searchQuery.toLowerCase();
-      this.filteredProducts = this.products.filter((product) => product.name.toLowerCase().includes(query));
-    },
-
-    addProductToCart(product){
-      const existingItem = this.cart.find(item => item.id === product.id);
-      if(existingItem){
-        existingItem.quantity += 1;
-      } else {
-        this.cart.push({...product, quantity: 1});
+    async loadProducts() {
+      console.log('Restaurant Name: ', this.restaurantName);
+      try {
+        const products = await productsService.getProductsByRestaurant(this.restaurantName);
+        this.products = products;
+        this.filteredProducts = this.products;
+      } catch (error) {
+        console.log("Failed to load products", error);
       }
     },
-    toggleEditMode() {
-      //implementar logica
+    filterProducts() {
+      const query = this.searchQuery.toLowerCase();
+      this.filteredProducts = this.products.filter((product) =>
+          product.name.toLowerCase().includes(query)
+      );
     },
-  }
+    addProductToSlot(product){
+      if(this.selectedSlot !== null){
+        this.$emit('add-to-slot', {product, slot: this.selectedSlot });
+      }
+    },
+    addProductToCart(product) {
+      this.$emit('add-to-cart', product);
+    },
+    toggleEditMode() {
+      this.$emit('toggle-edit-mode');
+    },
+    handleClickOutside(event) {
+      if (!this.$el.contains(event.target)) {
+        this.filteredProducts = [];
+      }
+    },
+    onSearchFocus() {
+      if (this.searchQuery) {
+        this.filterProducts();
+      }
+    },
+  },
 };
 </script>
 
 <style scoped>
+.products-header {
+  display: flex;
+  width: 100%;
+  position: relative;
+  max-width: 1000px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  gap: 10px;
+ }
+.search-bar {
+  width: 100%;
+  padding: 15px;
+  border-radius: 5px;
+  border: none;
+  color: #31304A;
+  background-color: #D3D2E5;
+}
+.dropdown{
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #D3D2E5;
+  border: 1px solid #31304A;
+  border-radius: 5px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: 920px;
+}
 .dropdown li {
   padding: 10px;
   display: flex;
@@ -65,22 +149,41 @@ export default {
   border-radius: 5px;
   cursor: pointer;
 }
-.products-header {
-   display: flex;
-   max-width: 1000px;
-   justify-content: space-between;
-   align-items: center;
-   margin: 0 auto;
-   padding-bottom: 10px;
-   gap: 10px;
- }
-.search-bar {
+
+.product-card{
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #F6F5FA;
+}
+.product-card:last-child{
+  border-bottom: none;
+}
+.card-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 100%;
-  padding: 15px;
-  border-radius: 5px;
-  border: none;
+  font-family: 'Red-hat-display', sans-serif;
+}
+.product-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+.product-price {
+  font-size: 12px;
   color: #31304A;
-  background-color: #D3D2E5;
+  margin-top: 4px;
+}
+
+.add-button {
+  background-color: #31304A;
+  color: #F6F5FA;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 .edit-button {
   padding: 13px 20px;
