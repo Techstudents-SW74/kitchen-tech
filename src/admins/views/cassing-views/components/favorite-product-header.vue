@@ -17,7 +17,7 @@
         <button @click="addProductToCart(product)" class="add-button">+</button>
       </li>
     </ul>
-    <button class="edit-button" @click="toggleEditMode">Edit</button>
+    <button class="edit-button" @click="toggleEditMode">{{ isEditMode ? 'Save' : 'Edit' }}</button>
   </div>
 </template>
 
@@ -38,6 +38,7 @@ export default {
       type: Array,
       required: true,
     },
+    selectedSlot: Number
   },
   data() {
     return {
@@ -73,6 +74,11 @@ export default {
       this.filteredProducts = this.products.filter((product) =>
           product.name.toLowerCase().includes(query)
       );
+    },
+    addProductToSlot(product){
+      if(this.selectedSlot !== null){
+        this.$emit('add-to-slot', {product, slot: this.selectedSlot });
+      }
     },
     addProductToCart(product) {
       this.$emit('add-to-cart', product);

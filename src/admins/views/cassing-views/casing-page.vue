@@ -9,9 +9,10 @@
               v-if="restaurantName"
               :is-edit-mode="isEditMode"
               :restaurant-name="restaurantName"
+              :selected-slot="selectedSlot"
               :cart="cart"
               @toggle-edit-mode="toggleEditMode"
-              @search-products="searchProducts"
+              @add-to-slot="addToSlot"
               @add-to-cart="addProductToCart"
           />
           <product-grid-component
@@ -63,7 +64,8 @@ export default {
       igv: 0,
       total: 0,
       isEditMode: false,
-      favoriteProducts: Array(40).fill(null) // Productos favoritos inicializados como vacíos
+      selectedSlot: null,
+      favoriteProducts: Array(30).fill(null),
     };
   },
   mounted() {
@@ -74,14 +76,19 @@ export default {
     }
   },
   methods: {
-    openProductList() {
-      // Lógica para abrir la lista de productos
+    toggleEditMode(){
+      this.isEditMode = !this.isEditMode;
+    },
+    openProductList(index) {
+      this.selectedSlot = index;
+    },
+    addToSlot({product, slot}){
+      this.favoriteProducts[slot] = product;
     },
     removeProductFromFavorites(index) {
-      if (confirm("Are you sure you want to remove this product from favorites?")) {
-        this.favoriteProducts.splice(index, 1, null);
-      }
+      this.favoriteProducts[index] = null;
     },
+
     addCustomer() {
       // Lógica para agregar un cliente
     },

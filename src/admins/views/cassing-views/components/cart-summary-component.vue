@@ -3,41 +3,35 @@
     <button class="add-customer" @click="addCustomer">Add Customer</button>
 
     <div class="cart-item" v-for="(item, index) in localCart" :key="item.id">
-      <div class="item-header">
+      <div class="item-header" @click="toggleItemInputs(index)">
         <div class="item-info">
           <span class="item-name">{{ item.name }}</span>
           <span class="item-unit">{{ item.quantity }} Un - S/{{ item.price }}</span>
         </div>
-        <button class="remove-button" @click="removeItem(index)">
+        <button class="remove-button" @click.stop="removeItem(index)">
           <i>-</i>
         </button>
       </div>
-      <div class="item-body">
+      <div v-if="item.showInputs" class="item-body">
         <div class="input-group">
           <label>Quantity</label>
-          <input type="number" v-model.number="item.quantity" @input="updateItemTotal(index)" min="1" />
+          <input type="number" v-model.number="item.quantity" @input="updateItemTotal(index)" @blur="validateQuantity(index)" />
         </div>
 
         <div class="input-group">
           <label>Unit Price</label>
-          <input type="number" v-model="item.price" @input="updateItemTotal(index)" />
-        </div>
-
-        <div class="note-section">
-          <label>Add Note</label>
-          <textarea v-model="item.note"></textarea>
+          <input type="number" v-model="item.price" @input="updateItemTotal(index)" @blur="validatePrice(index)" />
         </div>
       </div>
     </div>
-
     <div class="footer">
       <button class="save-sale" @click="saveSale">Save Sale</button>
       <div class="summary">
-        <span>Subtotal:</span>
+        <span>Subtotal</span>
         <span>S/{{ localSubtotal.toFixed(2) }}</span>
       </div>
       <div class="summary">
-        <span>I.G.V (18%):</span>
+        <span>I.G.V:</span>
         <span>S/{{ localIgv.toFixed(2) }}</span>
       </div>
     </div>
@@ -58,7 +52,10 @@ export default {
   },
   data() {
     return {
-      localCart: JSON.parse(JSON.stringify(this.cart)), // Copiamos el array de cart
+      localCart: this.cart.map(item => ({
+        ...item,
+        showInputs: false
+      })),
       localSubtotal: this.subtotal,
       localIgv: this.igv,
       localTotal: this.total,
@@ -69,23 +66,28 @@ export default {
     addCustomer() {
       this.$emit('add-customer');
     },
-    saveSale() {
-      this.$emit('save-sale');
-    },
-    charge() {
-      this.$emit('charge');
+
+    toggleItemInputs(index) {
+      // Alternar la visibilidad de los inputs
+      this.localCart[index].showInputs = !this.localCart[index].showInputs;
     },
 
+    validateQuantity(index) {
+      const item = this.localCart[index];
+      if (item.quantity === 0 || item.quantity === "") {
+        item.quantity = 1;
+      }
+      this.updateItemTotal(index);
+    },
+    validatePrice(index) {
+      const item = this.localCart[index];
+      if (item.price === 0 || item.price === "") {
+        item.price = 1;
+      }
+      this.updateItemTotal(index);
+    },
     updateItemTotal(index) {
       const item = this.localCart[index];
-
-      // Asignar un valor predeterminado si el input está vacío o nulo
-      if (item.quantity === null || item.quantity === "") {
-        item.quantity = 1; // Valor por defecto para cantidad
-      }
-      if (item.price === null || item.price === "") {
-        item.price = this.products.find(p => p.id === item.id)?.price || 0; // Precio original del producto como valor predeterminado
-      }
 
       const total = item.price * item.quantity;
       item.total = total > 0 ? total : 0;
@@ -96,11 +98,15 @@ export default {
       this.updateCartSummary();
       this.$emit('update-cart', this.localCart); // Enviar al padre la actualización del carrito
     },
+
+    saveSale() {
+      this.$emit('save-sale');
+    },
     updateCartSummary() {
       const rawTotal = this.localCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-      this.localSubtotal = rawTotal * 0.82;
-      this.localIgv = rawTotal * 0.18;
+      this.localSubtotal = rawTotal * 0.909;
+      this.localIgv = rawTotal * 0.091;
       this.localTotal = rawTotal;
 
       // Emitir los nuevos valores al componente padre
@@ -109,7 +115,10 @@ export default {
         igv: this.localIgv,
         total: this.localTotal
       });
-    }
+    },
+    charge() {
+      this.$emit('charge');
+    },
   },
   watch: {
     cart: {
@@ -167,6 +176,7 @@ button.add-customer {
 }
 .cart-item{
   border-top: 1px solid #F6F5FA;
+  border-bottom: 1px solid #F6F5FA;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -176,6 +186,7 @@ button.add-customer {
 .item-header {
   display: flex;
   justify-content: space-between;
+  margin-top: 5px;
   margin-bottom: 10px;
 }
 .item-info{
@@ -206,12 +217,14 @@ button.add-customer {
 .item-body {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;
   justify-content: space-between;
+  margin-bottom: 5px;
 }
 .input-group {
   flex-direction: column;
   max-width: 150px;
+  border: none;
+  border-radius: 5px;
 }
 input[type="number"]{
   -moz-appearance: textfield;
@@ -226,27 +239,13 @@ input::-webkit-inner-spin-button {
 input {
   width: 100%;
   max-width: 138px;
-}
-textarea {
-  resize: none;
-  width: 100%;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Red-hat-display', sans-serif;
 }
 
 label{
   font-size: 0.7rem;
-}
-
-.note-section {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-textarea {
-  width: 100%;
-  min-height: 10px;
-  max-height: 15px;
-  padding: 5px ;
-  max-width: 338px;
 }
 
 .remove-button {
