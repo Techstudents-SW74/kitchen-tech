@@ -51,6 +51,44 @@
           "category": "Teas",
           "price": 8
         }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "order-title": "Order 10/20/2024, 5:21:23 PM",
+          "products": [
+            {
+              "id": 8,
+              "name": "Torta de Chocolate",
+              "quantity": 1,
+              "price": 10
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "order-took": "Order 10/20/2024, 5:23:53 PM",
+          "products": [
+            {
+              "id": 10,
+              "name": "Té de frutos rojos",
+              "quantity": 1,
+              "price": 8
+            },
+            {
+              "id": 8,
+              "name": "Torta de Chocolate",
+              "quantity": 1,
+              "price": 10
+            },
+            {
+              "id": 7,
+              "name": "Menu Ejecutivo",
+              "quantity": 1,
+              "price": 20
+            }
+          ]
+        }
       ]
     },
     {
@@ -60,7 +98,8 @@
       "phone": 995763947,
       "password": "123456",
       "waiters": [],
-      "products": []
+      "products": [],
+      "orders": []
     },
     {
       "id": "3",
@@ -76,7 +115,8 @@
           "category": "Almuerzo",
           "price": 31
         }
-      ]
+      ],
+      "orders": []
     },
     {
       "id": "4",
@@ -85,7 +125,8 @@
       "phone": "929292929",
       "password": "123456",
       "waiters": [],
-      "products": []
+      "products": [],
+      "orders": []
     }
   ]
 }

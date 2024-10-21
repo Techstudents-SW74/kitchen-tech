@@ -46,6 +46,7 @@ import SidebarComponent from "@/admins/components/sidebar-component.vue";
 import ProductGridComponent from "@/admins/views/cassing-views/components/product-grid-component.vue";
 import CartSummaryComponent from "@/admins/views/cassing-views/components/cart-summary-component.vue";
 import FavoriteProductHeaderComponent from "@/admins/views/cassing-views/components/favorite-product-header.vue";
+import {ordersService} from "@/public/services/ordersService";
 
 export default {
   components: {
@@ -115,8 +116,30 @@ export default {
       this.igv = igv;
       this.total = total;
     },
-    saveSale() {
-      // Lógica para guardar la venta
+    async saveSale(orderData) {
+      const newOrder = {
+        id: null,
+        "order-title": orderData,
+        "order-took": `${new Date().toLocaleString()}`,
+        products: this.cart.map((item) => ({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      };
+
+      try {
+        const result = await ordersService.addOrder(this.restaurantName, newOrder);
+        if(result.success){
+          this.$router.push(`/${this.restaurantName}/${this.userRole}/saved-accounts`);
+          alert("Orden guardada exitosamente");
+        } else {
+          alert(`Error guardando la orden: ${result.message}`);
+        }
+      } catch (error){
+        console.error("Error al guardar la orden:", error);
+      }
     },
     charge() {
       // Lógica para procesar el cobro

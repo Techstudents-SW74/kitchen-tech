@@ -25,7 +25,12 @@
       </div>
     </div>
     <div class="footer">
-      <button class="save-sale" @click="saveSale">Save Sale</button>
+      <button class="save-sale" @click="showModal = true">Save Sale</button>
+      <save-order-component
+          :is-visible="showModal"
+          @save-sale="saveOrder"
+          @close-modal="closeModal"
+      />
       <div class="summary">
         <span>Subtotal</span>
         <span>S/{{ localSubtotal.toFixed(2) }}</span>
@@ -43,7 +48,10 @@
 </template>
 
 <script>
+import SaveOrderComponent from "@/admins/views/cassing-views/components/save-order-component.vue";
+
 export default {
+  components: {SaveOrderComponent},
   props: {
     cart: Array,
     subtotal: Number,
@@ -60,6 +68,7 @@ export default {
       localIgv: this.igv,
       localTotal: this.total,
       discountType: 'amount',
+      showModal: false,
     };
   },
   methods: {
@@ -99,8 +108,12 @@ export default {
       this.$emit('update-cart', this.localCart); // Enviar al padre la actualización del carrito
     },
 
-    saveSale() {
+    saveOrder(orderData) {
+      console.log(orderData);
       this.$emit('save-sale');
+    },
+    closeModal(){
+      this.showModal = false;
     },
     updateCartSummary() {
       const rawTotal = this.localCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
