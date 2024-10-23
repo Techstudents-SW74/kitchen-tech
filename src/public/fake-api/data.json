@@ -4,8 +4,8 @@
       "id": "1",
       "business-name": "345 RestoCafe",
       "email": "admin@345restocafe.com",
-      "phone": 927109111,
-      "password": "123456",
+      "phone": "9271091122",
+      "password": "1234567",
       "waiters": [
         {
           "id": 1,
@@ -24,6 +24,15 @@
           "phone": 987927148,
           "password": "123456",
           "savedAccounts": []
+        },
+        {
+          "name": "test",
+          "lastname": "123123",
+          "email": "123123@gmail.com",
+          "phone": "123123",
+          "password": "12312312",
+          "id": 3,
+          "savedAccounts": []
         }
       ],
       "products": [
@@ -32,6 +41,18 @@
           "name": "Menu Ejecutivo",
           "category": "Lunch",
           "price": 20
+        },
+        {
+          "id": 8,
+          "name": "Torta de Chocolate",
+          "category": "Desserts",
+          "price": 10
+        },
+        {
+          "id": 9,
+          "name": "Sandwich de Pollo",
+          "category": "Sandwiches",
+          "price": 9
         }
       ]
     },

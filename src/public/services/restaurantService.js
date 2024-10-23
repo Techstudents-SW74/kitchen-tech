@@ -56,10 +56,35 @@ const updateRestaurantByBusinessName = async (businessName, updatedDetails) => {
     await axios.put(`${API_URL}/${restaurant.id}`, updatedRestaurant);
     return updatedRestaurant; // Devuelve el restaurante actualizado
 };
+const addWaiterToRestaurant = async (businessName, waiterDetails) => {
+    try {
+        // Busca el restaurante por su nombre
+        const response = await axios.get(`${API_URL}?business-name=${businessName}`);
+        const restaurant = response.data[0];
 
+        if (!restaurant) {
+            throw new Error('Restaurante no encontrado');
+        }
+
+        // Genera un ID único para el waiter (puede ser incremental o basado en timestamp)
+        const newWaiterId = restaurant.waiters.length ? Math.max(...restaurant.waiters.map(w => w.id)) + 1 : 1;
+        const newWaiter = { ...waiterDetails, id: newWaiterId, savedAccounts: [] };
+
+        // Agrega el waiter al array de waiters del restaurante
+        restaurant.waiters.push(newWaiter);
+
+        // Actualiza el restaurante con el nuevo waiter
+        await axios.put(`${API_URL}/${restaurant.id}`, restaurant);
+        return newWaiter;
+    } catch (error) {
+        console.error("Error adding waiter:", error);
+        throw error;
+    }
+};
 
 
 export default {
     getRestaurantByName,
     updateRestaurantByBusinessName,
+    addWaiterToRestaurant
 };
