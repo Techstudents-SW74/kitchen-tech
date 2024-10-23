@@ -1,64 +1,26 @@
-import axios from "axios";
+import axiosInstance from "./axiosConfig";
 
-const API_URL = 'http://localhost:3000/restaurants';
+const API_URL = '/auth';
 
 export default {
-    async login(email, password) {
+    async login(username, password) {
         try {
-            const response = await axios.get(API_URL);
-            const restaurants = response.data; // Ajustar para usar directamente response.data
-
-
-            for (const restaurant of restaurants) { // Iterar sobre el array directamente
-                if (restaurant.email === email && restaurant.password === password) {
-                    return { success: true, user: restaurant, role: 'admin' };
-                }
-
-                for (const waiter of restaurant.waiters) { // Acceder a los waiters del restaurante actual
-                    if (waiter.email === email && waiter.password === password) {
-                        return { success: true, user: restaurant, role: 'waiter', restaurantId: restaurant['business-name'] };
-                    }
-                }
-            }
-            return { success: false, message: 'Invalid email or password' };
+            const response = await axiosInstance.post(`${API_URL}/login`, { username, password });
+            return { success: true, token: response.data.token, id: response.data.id };
         } catch (error) {
-            return { success: false, message: 'An error occurred while trying to login' };
+            return { success: false, message: 'Invalid username or password' };
         }
     },
-
-    async signup(adminData){
-        try{
-            console.log('sign up data received', adminData);
-
-            //Obtiene los datos del API
-            const response = await axios.get(API_URL);
-            const restaurants = response.data;
-            console.log('Current restaurants:', restaurants);
-
-            //Verifica si el restaurante ya esxiste
-            const existingRestaurant = restaurants.find(r => r.email === adminData.email);
-            if(existingRestaurant) {
-                throw new Error('Restaurant with this email already exists');
-            }
-
-            //Crear nuevo restaurante
-            const newRestaurant = {
-                id: restaurants.length + 1,
-                "business-name": adminData.businessName,
-                email: adminData.email,
-                phone: adminData.phone,
-                password: adminData.password,
-                waiters:[],
-                products:[]
-            };
-
-            //Guardar los datos actualizados de nuevo en el API
-            await axios.post(API_URL, newRestaurant);
-
-            return {success: true, message: 'Restaurant registered successfully'};
+    async signup(userData) {
+        try {
+            const response = await axiosInstance.post(`${API_URL}/register`, userData);
+            return { success: true, message: response.data.message || 'User registered successfully' };
         } catch (error) {
-            console.error('Error during signup:', error);
-            return { success: false, message: error.message };
+            return { success: false, message: error.response?.data?.message || 'An error occurred' };
         }
+    },
+    async getRestaurants() {
+        const response = await axiosInstance.get('/restaurant');
+        return response.data;
     }
 };

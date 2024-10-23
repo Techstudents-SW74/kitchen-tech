@@ -5,33 +5,40 @@
       <header-component :restaurant-name="restaurantName" :role="userRole" class="header" />
       <div class="page-container">
         <div class="page-header">
-          <p class="title">{{ isEdit? 'Edit Product' : 'Add New Product' }}</p>
+          <p class="title">{{ isEdit ? 'Edit Product' : 'Add New Product' }}</p>
         </div>
         <div class="card">
           <form @submit.prevent="submitProduct">
             <div class="form-field">
               <label for="name">Product Name</label>
-              <input type="text" v-model="product.name" required/>
+              <input type="text" v-model="product.productName" required />
+            </div>
 
-              <div class="form-row">
-                <div class="form-field">
-                  <label for="category">Product Category</label>
-                  <input type="text" v-model="product.category" required/>
-                </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label for="category">Product Category</label>
+                <input type="text" v-model="product.category" required />
+              </div>
 
-                <div class="form-field">
-                  <label for="price">Product Price</label>
-                  <input type="text" v-model="product.price" required/>
-                </div>
+              <div class="form-field">
+                <label for="price">Product Price</label>
+                <input type="number" v-model="product.productPrice" required />
               </div>
             </div>
-            <button type="submit">{{ isEdit? 'Save Changes' : 'Add Product'}}</button>
+
+            <div class="form-field">
+              <label for="imageUrl">Product Image URL</label>
+              <input type="text" v-model="product.productImageUrl" />
+            </div>
+
+            <button type="submit">{{ isEdit ? 'Save Changes' : 'Add Product' }}</button>
           </form>
-          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 
 <script>
 import HeaderComponent from "@/admins/components/header-component.vue";
@@ -48,76 +55,92 @@ export default {
       restaurantName: '',
       userRole: '',
       product: {
-        id: null,
-        name: '',
+        productName: '',
         category: '',
-        price: null,
+        productPrice: null,
+        restaurantId: null, // Agrega el restaurantId aquí
       },
       isEdit: false,
     };
   },
-  async mounted() {
-    const userData = JSON.parse(localStorage.getItem('userData'));
+  mounted() {
+    const userData = JSON.parse(localStorage.getItem('userData')); // Obtener los datos del usuario
+    const restaurantId = localStorage.getItem('restaurantId'); // Obtener el restaurantId
     if (userData) {
-      this.restaurantName = userData['business-name'];
+      this.restaurantName = userData['business-name']; // O lo que sea necesario
       this.userRole = userData.role;
     }
+    if (restaurantId) {
+      this.product.restaurantId = restaurantId; // Asigna el restaurantId al producto
+    }
 
-    if(this.$route.params.productId){
+    if (this.$route.params.productId) {
       this.isEdit = true;
-      await this.loadProduct();
+      this.loadProduct();
     }
   },
   methods: {
     async loadProduct() {
       try {
-        const products = await productsService.getProductsByRestaurant(this.restaurantName);
-        const product = products.find((p) => p.id === parseInt(this.$route.params.productId));
+        const productId = this.$route.params.productId; // Obtén el ID del producto desde los parámetros de la ruta
+        const product = await productsService.getProductById(productId); // Llama al endpoint para obtener el producto
 
         if (product) {
-          this.product = product;
+          this.product = {
+            id: product.id,
+            productName: product.productName,
+            productPrice: product.productPrice,
+            productImageUrl: product.productImageUrl,
+            category: product.category,
+            restaurantId: product.restaurantId, // Incluye esto si es necesario
+          };
         }
-
       } catch (error) {
         console.error("Failed to load product", error);
       }
     },
     async submitProduct() {
-      this.product.price = parseFloat(this.product.price);
+      this.product.productPrice = parseFloat(this.product.productPrice);
+      this.product.restaurantId = Number(this.product.restaurantId);
 
-      if (this.isEdit) {
-        try {
-          const response = await productsService.updateProduct(this.restaurantName, this.product);
+      console.log('Product to send:', this.product);
 
-          if (response && response.success) {
-            this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
+      try {
+        if (this.isEdit) {
+          const response = await productsService.updateProduct(this.product);
+          console.log('Response from update:', response); // Log del response
+
+          // Verifica el estado de la respuesta
+          if (response && (response.status === 200 || response.success)) {
             alert('Product updated successfully.');
-          } else {
-            alert(response.message || 'Update failed');
-          }
-        } catch (error) {
-          console.error('Error during product updating process:', error);
-          alert('An error occurred: ' + error.message);
-        }
-      } else {
-        try {
-          const response = await productsService.addProduct(this.restaurantName, this.product);
-
-          if (response && response.success) {
             this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
-            alert('Product updated successfully.');
           } else {
-            alert(response.message || 'Creation failed');
+            console.error('Update response error:', response);
+            this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
           }
-        } catch (error) {
-          console.error('Error during product creation process:', error);
-          alert('An error occurred: ' + error.message);
+        } else {
+          const response = await productsService.addProduct(this.product);
+          console.log('Response from create:', response);
+
+          // Verifica el estado de la respuesta
+          if (response && (response.status === 201 || response.success)) {
+            alert('Product created successfully.');
+            this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
+          } else {
+            console.error('Creation response error:', response);
+            this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
+          }
         }
+      } catch (error) {
+        console.error('Error during product creation/update process:', error);
+        alert('An error occurred: ' + (error.response ? error.response.data.message : error.message));
       }
     }
+
   }
 }
 </script>
+
 
 <style scoped>
 /* Estilos que adaptan la vista a la region especifica de la pantalla */>

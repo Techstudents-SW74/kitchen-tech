@@ -1,36 +1,30 @@
 <template>
   <div class="layout">
-    <sidebar-component :restaurant-name="restaurantName" :role="userRole" class="sidebar" />
+    <sidebar-component v-if="userDetails.restaurant" :restaurant-name="userDetails.restaurant.name" :role="userRole" class="sidebar" />
     <div class="main-content">
-      <header-component :restaurant-name="restaurantDetails['business-name']" :role="userRole" class="header" />
+      <header-component v-if="userDetails.restaurant" :restaurant-name="userDetails.restaurant.name" :role="userRole" class="header" />
       <div class="page-container">
-        <h1>Edit Restaurant Details</h1>
-        <form @submit.prevent="updateRestaurant" class="form">
+        <h1>Edit User Details</h1>
+        <form @submit.prevent="updateUser" class="form">
           <div class="form-group">
-            <label for="business-name">Business Name:</label>
-            <input
-                type="text"
-                id="business-name"
-                v-model="restaurantDetails['business-name']"
-                disabled
-                required
-            />
+            <label for="username">Username:</label>
+            <input type="text" id="username" v-model="userDetails.username" required />
+          </div>
+          <div class="form-group">
+            <label for="first-name">First Name:</label>
+            <input type="text" id="first-name" v-model="userDetails.firstName" required />
+          </div>
+          <div class="form-group">
+            <label for="last-name">Last Name:</label>
+            <input type="text" id="last-name" v-model="userDetails.lastName" required />
           </div>
           <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" v-model="restaurantDetails.email" required />
+            <input type="email" id="email" v-model="userDetails.email" required />
           </div>
           <div class="form-group">
             <label for="phone">Phone:</label>
-            <input type="tel" id="phone" v-model="restaurantDetails.phone" required />
-          </div>
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" v-model="newPassword" required />
-          </div>
-          <div class="form-group">
-            <label for="repeat-password">Repeat Password:</label>
-            <input type="password" id="repeat-password" v-model="repeatPassword" required />
+            <input type="tel" id="phone" v-model="userDetails.phone" required />
           </div>
           <button type="submit" class="submit-button">Update</button>
         </form>
@@ -42,7 +36,7 @@
 <script>
 import HeaderComponent from "@/admins/components/header-component.vue";
 import SidebarComponent from "@/admins/components/sidebar-component.vue";
-import restaurantService from "@/public/services/restaurantService";
+import userService from "@/public/services/userService";
 
 export default {
   components: {
@@ -51,56 +45,66 @@ export default {
   },
   data() {
     return {
-      restaurantDetails: {
+      userDetails: {
+        id: null,
+        username: '',
+        firstName: '',
+        lastName: '',
         email: '',
         phone: '',
-        'business-name': '',
+        restaurant: {
+          id: null,
+          name: '',
+          email: '',
+          description: '',
+          image: '',
+          logo: '',
+          city: '',
+          district: '',
+        },
       },
       userRole: '',
-      newPassword: '',
-      repeatPassword: '',
+      restaurantDetails: {
+        restaurant: {},
+      },
     };
   },
   mounted() {
     const userData = JSON.parse(localStorage.getItem('userData'));
     if (userData) {
       this.userRole = userData.role;
-      this.loadRestaurantByName(userData['business-name']); // Cargar detalles usando el business-name del usuario
+      this.loadUserDetails(userData.id);
     }
   },
   methods: {
-    async loadRestaurantByName(businessName) {
+    async loadUserDetails(userId) {
       try {
-        const restaurant = await restaurantService.getRestaurantByName(businessName);
-        if (restaurant) {
-          console.log("Loaded restaurant:", restaurant);
-          this.restaurantDetails = restaurant; // Asigna los datos del restaurante
+        const user = await userService.getUserById(userId);
+        if (user) {
+          this.userDetails = { ...user };
         } else {
-          console.warn("Restaurant not found.");
+          console.warn("User not found.");
         }
       } catch (error) {
-        console.error("Error loading restaurant by name:", error);
+        console.error("Error loading user details:", error);
       }
     },
-    async updateRestaurant() {
-      if (this.newPassword !== this.repeatPassword) {
-        alert("Passwords do not match!");
-        return;
-      }
+    async updateUser() {
       try {
-        // Prepara los detalles actualizados
         const updatedDetails = {
-          "business-name": this.restaurantDetails["business-name"],
-          email: this.restaurantDetails.email,
-          phone: this.restaurantDetails.phone,
-          password: this.newPassword
+          id: this.userDetails.id,
+          username: this.userDetails.username,
+          firstName: this.userDetails.firstName,
+          lastName: this.userDetails.lastName,
+          email: this.userDetails.email,
+          phone: this.userDetails.phone,
+          restaurant: this.userDetails.restaurant,
         };
 
-        // Actualiza el restaurante usando el business-name
-        await restaurantService.updateRestaurantByBusinessName(this.restaurantDetails["business-name"], updatedDetails);
-        alert("Restaurant details updated successfully!");
+        await userService.updateUserById(this.userDetails.id, updatedDetails);
+        alert("User details updated successfully!");
       } catch (error) {
-        console.error("Error updating restaurant details:", error);
+        console.error("Error updating user details:", error);
       }
     },
   },

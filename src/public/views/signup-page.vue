@@ -7,50 +7,65 @@
       </div>
 
       <form @submit.prevent="onSubmit" class="signup-form">
-        <!-- Row para businessName-->
         <div class="form-row">
           <div class="form-field">
-            <label for="businessName">Business Name</label>
-            <input type="text" id="businessName" v-model="businessName" placeholder="Ex. La Bisteca" />
-            <span v-if="!businessName && businessNameTouched">Business Name is required</span>
+            <label for="username">Username</label>
+            <input type="text" id="username" v-model="username" placeholder="Ex. fcastr234123o" required />
           </div>
         </div>
 
-        <!-- Row para email y phone -->
+        <div class="form-row">
+          <div class="form-field">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" v-model="firstName" placeholder="Ex. Fabrizzio" required />
+          </div>
+          <div class="form-field">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" v-model="lastName" placeholder="Ex. Castro" required />
+          </div>
+        </div>
+
         <div class="form-row">
           <div class="form-field">
             <label for="email">Email</label>
-            <input type="email" id="email" v-model="email" placeholder="Ex. admin@labisteca.com" />
-            <span v-if="!email && emailTouched">Email is required</span>
-            <span v-if="email && !isValidEmail">Please enter a valid Email</span>
+            <input type="email" id="email" v-model="email" placeholder="Ex. email@example.com" required />
           </div>
-
           <div class="form-field">
             <label for="phone">Phone</label>
-            <input type="tel" id="phone" v-model="phone" placeholder="Ex. 987654321" />
-            <span v-if="!phone && phoneTouched">Phone number is required</span>
-            <span v-if="phone && !isValidPhone">Please enter a valid phone number</span>
+            <input type="tel" id="phone" v-model="phone" placeholder="Ex. 904688149" required />
           </div>
         </div>
 
-        <!-- Row para password y confirm password -->
         <div class="form-row">
           <div class="form-field">
             <label for="password">Password</label>
-            <input type="password" id="password" v-model="password" placeholder="Create your password" />
-            <span v-if="!password && passwordTouched">Password is required</span>
-            <span v-if="password.length > 0 && password.length < 6">Password must have at least 6 characters</span>
+            <input type="password" id="password" v-model="password" placeholder="Create your password" required />
           </div>
-
           <div class="form-field">
             <label for="confirmPassword">Confirm Password</label>
-            <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Confirm your password" />
-            <span v-if="!confirmPassword && confirmPasswordTouched">Please enter your password again</span>
-            <span v-if="confirmPassword && !passwordsMatch">Passwords don't match</span>
+            <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Confirm your password" required />
           </div>
         </div>
 
-        <!-- Botón de registro -->
+        <div class="form-row">
+          <div class="form-field">
+            <label for="birthDate">Birth Date</label>
+            <input type="date" id="birthDate" v-model="birthDate" required />
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="restaurant">Restaurant</label>
+              <select id="restaurant" v-model="selectedRestaurantId" class="dropdown-form-field" required>
+                <option value="" disabled>Select a restaurant</option>
+                <option v-for="restaurant in restaurants" :key="restaurant.id" :value="restaurant.id">
+                  {{ restaurant.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
         <button class="signup-button" type="submit">Sign Up</button>
 
         <div class="login-redirect">
@@ -61,72 +76,52 @@
   </div>
 </template>
 
-
 <script>
 import authService from "@/public/services/authService"
 
 export default {
   data() {
     return {
-      businessName: '',
-      businessNameTouched: false,
+      username: '',
+      firstName: '',
+      lastName: '',
       email: '',
-      emailTouched: false,
       phone: '',
-      phoneTouched: false,
       password: '',
-      passwordTouched: false,
       confirmPassword: '',
-      confirmPasswordTouched: false,
+      birthDate: '',
+      selectedRestaurantId: null,
+      restaurants: [] // Lista de restaurantes
     };
   },
-  computed: {
-    isValidEmail() {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailPattern.test(this.email);
-    },
-    isValidPhone() {
-      const phonePattern = /^\d{9}$/;
-      return phonePattern.test(this.phone);
-    },
-    passwordsMatch() {
-      return this.password === this.confirmPassword;
-    },
-    isValidForm() {
-      const valid = this.businessName && this.email && this.isValidEmail && this.isValidPhone && this.passwordsMatch && this.password.length >= 6;
-      return valid;
-    }
+  async created() {
+    this.restaurants = await authService.getRestaurants(); // Cargar los restaurantes al crear el componente
   },
   methods: {
     async onSubmit() {
-      this.businessNameTouched = true;
-      this.emailTouched = true;
-      this.phoneTouched = true;
-      this.passwordTouched = true;
-      this.confirmPasswordTouched = true;
+      const userData = {
+        username: this.username,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        password: this.password,
+        phone: this.phone,
+        birthDate: this.birthDate,
+        photo: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png", // Puedes cambiar esto si quieres que el usuario ingrese una foto
+        role: "USER",
+        restaurant: { id: this.selectedRestaurantId }
+      };
 
-      if (this.isValidForm) {
-        const adminData = {
-          businessName: this.businessName,
-          email: this.email,
-          phone: this.phone,
-          password: this.password,
-        };
-
-        try {
-          const response = await authService.signup(adminData);
-
-          if (response.success) {
-            this.$router.push('/login');
-          } else {
-            alert(response.message);
-          }
-        } catch (error) {
-          console.error('Error during signup process:', error); // Log de error
-          alert('An error occurred: ' + error.message);
+      try {
+        const response = await authService.signup(userData);
+        if (response.success) {
+          this.$router.push('/login');
+        } else {
+          alert(response.message);
         }
-      } else {
-        console.warn('Form is invalid, submission blocked.'); // Log de advertencia
+      } catch (error) {
+        console.error('Error during signup process:', error);
+        alert('An error occurred: ' + error.message);
       }
     },
   }
@@ -135,6 +130,24 @@ export default {
 
 
 <style scoped>
+.dropdown-form-field {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc; /* Añadir un borde gris claro */
+  border-radius: 5px;
+  color: #31304A;
+  margin: 10px 0;
+  font-weight: 500;
+  box-sizing: border-box;
+  background-color: #fff; /* Fondo blanco */
+  appearance: none; /* Elimina la flecha predeterminada del navegador */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2331304A"><path d="M7 10l5 5 5-5H7z"/></svg>'); /* Flecha personalizada */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+}
+
 .card-container {
   display: flex;
   justify-content: center;

@@ -56,26 +56,31 @@ export default {
   },
   mounted() {
     const userData = JSON.parse(localStorage.getItem('userData'));
-    if(userData) {
+    if (userData) {
       this.restaurantName = userData['business-name'];
       this.userRole = userData.role;
+      this.restaurantId = localStorage.getItem('restaurantId'); // Obtener el ID del restaurante de localStorage
     }
     this.loadProducts();
   },
+
   methods: {
     async loadProducts() {
-      console.log('Restaurant Name: ', this.restaurantName);
+      const restaurantId = localStorage.getItem('restaurantId'); // Obtén el ID del restaurante
+
       try {
-        const products = await productsService.getProductsByRestaurant(this.restaurantName);
+        const products = await productsService.getProductsByRestaurant(restaurantId);
         this.products = products;
         this.filteredProducts = this.products;
       } catch (error) {
-        console.log("Failed to load products", error);
+        console.error("Failed to load products", error);
       }
     },
     filterProducts() {
-      const query = this.searchQuery.toLowerCase();
-      this.filteredProducts = this.products.filter((product) => product.name.toLowerCase().includes(query));
+      const query = this.searchQuery.toLowerCase(); // Convierte la consulta a minúsculas
+      this.filteredProducts = this.products.filter((product) =>
+          product.productName.toLowerCase().includes(query) // Asegúrate de usar el nombre correcto
+      );
     },
     addProduct() {
       this.$router.push(`/${this.restaurantName}/${this.userRole}/new-product`);
@@ -84,20 +89,21 @@ export default {
       this.$router.push(`/${this.restaurantName}/${this.userRole}/product/${product.id}`);
     },
     async deleteProduct(productId) {
-      try {
-        const response = await productsService.deleteProduct(this.restaurantName, productId);
-
-        if (confirm("Are you sure you want to remove this product")) {
+      if (confirm("Are you sure you want to remove this product?")) {
+        try {
+          const response = await productsService.deleteProduct(productId);
           alert(response.message || "Product deleted successfully");
-          await this.fetchProducts();
-        } else {
-          alert(response.message || "Failed to delete product");
+          // Vuelve a cargar los productos después de la eliminación
+          await this.loadProducts();
+        } catch (error) {
+          console.error('Error during product deletion process:', error);
+          alert('An error occurred: ' + error.message);
         }
-      } catch (error) {
-        console.error('Error during product deletion process:', error);
-        alert('An error occurred: ' + error.message);
+      } else {
+        alert("Deletion canceled.");
       }
     },
+
 
     async fetchProducts(){
       try {
