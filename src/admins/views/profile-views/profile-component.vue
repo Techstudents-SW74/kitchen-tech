@@ -1,8 +1,8 @@
 <template>
   <div class="layout">
-    <sidebar-component v-if="restaurantDetails.restaurant" :restaurant-name="restaurantDetails.restaurant.name" :role="userRole" class="sidebar" />
+    <sidebar-component v-if="userDetails.restaurant" :restaurant-name="userDetails.restaurant.name" :role="userRole" class="sidebar" />
     <div class="main-content">
-      <header-component v-if="restaurantDetails.restaurant" :restaurant-name="restaurantDetails.restaurant.name" :role="userRole" class="header" />
+      <header-component v-if="userDetails.restaurant" :restaurant-name="userDetails.restaurant.name" :role="userRole" class="header" />
       <div class="page-container">
         <h1>Edit User Details</h1>
         <form @submit.prevent="updateUser" class="form">

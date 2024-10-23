@@ -1,93 +1,58 @@
-import axios from "axios";
+import axiosInstance from "./axiosConfig";
 
-const API_URL = 'http://localhost:3000/restaurants';
+const API_URL = '/product';
 
 export const productsService = {
-    async getProductsByRestaurant(restaurantName) {
+    async getProductsByRestaurant(restaurantId) {
         try {
-            const response = await axios.get(API_URL);
-            const restaurant = response.data.find(restaurant => restaurant['business-name'] === restaurantName);
-            if (restaurant) {
-                console.log(restaurant.products);
-                return restaurant.products || [];  // Inicializa como arreglo si no existe
-            } else {
-                throw new Error('Restaurant not found');
-            }
+            const response = await axiosInstance.get(`${API_URL}/restaurant/${restaurantId}`);
+            return response.data;
         } catch (error) {
-            console.error("Error fetching products: ", error);
+            console.error('Error fetching products:', error);
             throw error;
         }
     },
-
-    async addProduct(restaurantName, product) {
+    async deleteProduct(productId) {
         try {
-            const response = await axios.get(API_URL);
-            const restaurant = response.data.find(r => r['business-name'] === restaurantName);
-
-            if (restaurant) {
-                const lastProduct = restaurant.products[restaurant.products.length - 1];
-                const newId = lastProduct ? lastProduct.id + 1 : 1;
-                product.id = newId;
-
-                restaurant.products.push(product);
-                await axios.put(`${API_URL}/${restaurant.id}`, restaurant);
-
-                // Devolver respuesta con éxito
-                return { success: true, message: "Product created successfully" };
-            }
+            const response = await axiosInstance.delete(`${API_URL}/${productId}`);
+            return response.data;
         } catch (error) {
-            console.error("Error adding product: ", error);
-            return { success: false, message: error.message };
+            console.error('Error deleting product:', error);
+            throw error;
         }
     },
-
-    async updateProduct(restaurantName, product) {
-        try {
-            const response = await axios.get(API_URL);
-            const restaurant = response.data.find(r => r['business-name'] === restaurantName);
-
-            if (restaurant) {
-                const index = restaurant.products.findIndex(p => p.id === product.id);
-
-                if (index !== -1) {
-                    restaurant.products.splice(index, 1, product);
-                    await axios.put(`${API_URL}/${restaurant.id}`, restaurant);
-
-                    // Devolver respuesta con éxito
-                    return { success: true, message: "Product updated successfully" };
-                } else {
-                    return { success: false, message: "Product not found" };
-                }
-            }
-        } catch (error) {
-            console.error("Error updating product: ", error);
-            return { success: false, message: error.message };
-        }
+    async updateProduct(product) {
+        const response = await axiosInstance.put(`${API_URL}/${product.id}`, {
+            id: product.id,
+            productName: product.productName,
+            productPrice: product.productPrice,
+            productImageUrl: product.productImageUrl,
+            category: product.category,
+            restaurantId: product.restaurantId,
+        });
+        return response.data;
     },
-
-    async deleteProduct(restaurantName, productId) {
+    async addProduct(product) {
         try {
-            const response = await axios.get(API_URL);
-            const restaurant = response.data.find(r => r['business-name'] === restaurantName);
-
-            if (restaurant) {
-                const index = restaurant.products.findIndex(p => p.id === productId);
-
-                if (index !== -1) {
-                    restaurant.products.splice(index, 1);
-                    await axios.put(`${API_URL}/${restaurant.id}`, restaurant);
-
-                    // Devolver respuesta con éxito
-                    return { success: true, message: "Product deleted successfully" };
-                } else {
-                    return { success: false, message: "Product not found" };
-                }
+            const response = await axiosInstance.post(`${API_URL}`, {
+                productName: product.productName,
+                productPrice: product.productPrice,
+                productImageUrl: product.productImageUrl,
+                category: product.category,
+                restaurantId: product.restaurantId,
+            });
+            if (response.status === 201) {
+                return response.data;
             } else {
-                return { success: false, message: "Restaurant not found" };
+                throw new Error('Error creating product');
             }
         } catch (error) {
-            console.error("Error deleting product: ", error);
-            return { success: false, message: error.message };
+            console.error('Error in addProduct:', error.response ? error.response.data : error.message);
+            throw error; // Lanza el error para que lo manejes donde llames a esta función
         }
+    },
+    async getProductById(productId) {
+        const response = await axiosInstance.get(`${API_URL}/${productId}`);
+        return response.data;
     }
 };

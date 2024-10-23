@@ -52,15 +52,18 @@
             <label for="birthDate">Birth Date</label>
             <input type="date" id="birthDate" v-model="birthDate" required />
           </div>
-          <div class="form-field">
-            <label for="restaurant">Restaurant</label>
-            <select v-model="selectedRestaurantId" required>
-              <option value="" disabled>Select a restaurant</option>
-              <option v-for="restaurant in restaurants" :key="restaurant.id" :value="restaurant.id">
-                {{ restaurant.name }}
-              </option>
-            </select>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="restaurant">Restaurant</label>
+              <select id="restaurant" v-model="selectedRestaurantId" class="dropdown-form-field" required>
+                <option value="" disabled>Select a restaurant</option>
+                <option v-for="restaurant in restaurants" :key="restaurant.id" :value="restaurant.id">
+                  {{ restaurant.name }}
+                </option>
+              </select>
+            </div>
           </div>
+
         </div>
 
         <button class="signup-button" type="submit">Sign Up</button>
@@ -127,6 +130,24 @@ export default {
 
 
 <style scoped>
+.dropdown-form-field {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc; /* Añadir un borde gris claro */
+  border-radius: 5px;
+  color: #31304A;
+  margin: 10px 0;
+  font-weight: 500;
+  box-sizing: border-box;
+  background-color: #fff; /* Fondo blanco */
+  appearance: none; /* Elimina la flecha predeterminada del navegador */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2331304A"><path d="M7 10l5 5 5-5H7z"/></svg>'); /* Flecha personalizada */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+}
+
 .card-container {
   display: flex;
   justify-content: center;
