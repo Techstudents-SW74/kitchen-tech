@@ -6,19 +6,18 @@
         <p class="card-title">Sign In</p>
       </div>
 
-      <!-- Formulario para el email -->
+      <!-- Formulario para el username -->
       <form @submit.prevent="onSubmit">
-        <!-- Input para el email -->
+        <!-- Input para el username -->
         <div class="form-field">
-          <label for="email">Email</label>
+          <label for="username">Username</label>
           <input
-              type="email"
-              id="email"
-              v-model="email"
-              placeholder="Ex. fcastro@gmail.com"
+              type="text"
+              id="username"
+              v-model="username"
+              placeholder="Ex. fcastro"
           />
-          <span v-if="!email && emailTouched">Please enter your email</span>
-          <span v-if="email && !isValidEmail">Please enter a valid email address</span>
+          <span v-if="!username && usernameTouched">Please enter your username</span>
         </div>
 
         <!-- Input para la contraseña -->
@@ -50,41 +49,40 @@ import authService from "@/public/services/authService";
 export default {
   data() {
     return {
-      email: '',
-      emailTouched: false,
+      username: '',  // Cambiamos de 'email' a 'username'
+      usernameTouched: false,
       password: '',
       passwordTouched: false,
       loginError: null
     };
   },
-  computed: {
-    isValidEmail() {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailPattern.test(this.email);
-    }
-  },
   methods: {
     async onSubmit() {
-      this.emailTouched = true;
+      this.usernameTouched = true;
       this.passwordTouched = true;
 
-      if (this.email && this.isValidEmail && this.password.length >= 6) {
+      // Verificamos que el username y la password sean válidos
+      if (this.username && this.password.length >= 6) {
         try {
-          const response = await authService.login(this.email, this.password);
+          // Llamamos al servicio de autenticación pasando 'username' y 'password'
+          const response = await authService.login(this.username, this.password);
 
-          if(response.success) {
-            const restaurantName = response.role === 'admin'
-                ? response.user['business-name']
-                : response.restaurantId;
+          if (response.success) {
+            // Guardamos el token en localStorage
+            localStorage.setItem('token', response.token);
 
-            const basePath = `/${restaurantName}/${response.role}`;
-            localStorage.setItem('userData', JSON.stringify({ 'business-name': restaurantName, role: response.role }));
+            // Guardamos el id en localStorage
+            localStorage.setItem('userData', JSON.stringify({ id: response.id }));
+
+            // Redirigir a la vista deseada después del login
+            const basePath = `/${this.username}/${response.role}`;
+            localStorage.setItem('userData', JSON.stringify({ username: this.username, id: response.id, role: response.role }));
             this.$router.push(`${basePath}/casing`);
           } else {
             this.loginError = response.message;
           }
-        }catch (error) {
-          this.loginError = 'An error ocurred. Please try again';
+        } catch (error) {
+          this.loginError = 'An error occurred. Please try again';
         }
       }
     }
