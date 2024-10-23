@@ -45,7 +45,7 @@
 <script>
 import HeaderComponent from "@/admins/components/header-component.vue";
 import SidebarComponent from "@/admins/components/sidebar-component.vue";
-import restaurantService from "@/public/services/restaurantService";
+import restaurantService from "@/public/services/userService";
 
 export default {
   components: {
