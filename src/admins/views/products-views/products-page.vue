@@ -5,24 +5,27 @@
       <header-component :restaurant-name="restaurantName" :role="userRole" class="header" />
       <div class="page-container">
         <main class="products-page">
-          <div class="products-header">
-            <input
-                class="search-bar"
-                type="text"
-                v-model="searchQuery"
-                placeholder="Search products..."
-                @input="filterProducts"
-            />
-            <button class="add-button" @click="addProduct">Add Product</button>
-          </div>
-          <div class="product-cards">
-            <ProductCardComponent
-                v-for="product in filteredProducts"
-                :key="product.id"
-                :product="product"
-                @edit-product="editProduct"
-                @delete-product="deleteProduct"
-            />
+          <!-- Aquí está el contenedor común para los elementos que deben estar alineados -->
+          <div class="content-wrapper">
+            <div class="products-header">
+              <input
+                  class="search-bar"
+                  type="text"
+                  v-model="searchQuery"
+                  placeholder="Search products..."
+                  @input="filterProducts"
+              />
+              <button class="add-button" @click="addProduct">Add Product</button>
+            </div>
+            <div class="product-cards">
+              <ProductCardComponent
+                  v-for="product in filteredProducts"
+                  :key="product.id"
+                  :product="product"
+                  @edit-product="editProduct"
+                  @delete-product="deleteProduct"
+              />
+            </div>
           </div>
         </main>
       </div>
@@ -33,7 +36,7 @@
 <script>
 import HeaderComponent from "@/admins/components/header-component.vue";
 import SidebarComponent from "@/admins/components/sidebar-component.vue";
-import ProductCardComponent from "@/admins/components/product-card-component.vue";
+import ProductCardComponent from "@/admins/views/products-views/components/product-card-component.vue";
 import { productsService } from "@/public/services/productsService";
 
 export default {
@@ -61,6 +64,7 @@ export default {
   },
   methods: {
     async loadProducts() {
+      console.log('Restaurant Name: ', this.restaurantName);
       try {
         const products = await productsService.getProductsByRestaurant(this.restaurantName);
         this.products = products;
@@ -143,26 +147,45 @@ export default {
 }
 
 /* Estilos de la vista actual */
+.page-container {
+  margin-top: 100px; /* Desplaza el contenido principal por debajo del header */
+  padding: 20px;
+  background-color: #F6F5FA; /* Fondo blanco para la zona de contenido */
+  height: calc(100vh - 100px); /* Ajusta el alto para evitar desbordamientos */
+  overflow-y: auto; /* Permite el scroll si el contenido es muy largo */
+  font-family: 'Red Hat Display', sans-serif;
+}
 .products-header {
   display: flex;
+  max-width: 1000px;
   justify-content: space-between;
-  margin-bottom: 20px;
+  align-items: center;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  gap: 10px;
 }
 .search-bar {
-  border: none;
-  background: #D3D2E5;
-  border-radius: 5px;
+  width: 100%;
   padding: 15px;
-  margin-left: 10px;
-  width: 80%;
+  border-radius: 5px;
+  border: none;
+  color: #31304A;
+  background-color: #D3D2E5;
+  max-width: 1000px;
 }
 .add-button {
-  background-color: #D3D2E5;
+  padding: 13px 20px;
+  background: #D3D2E5;
   color: #31304A;
   border: none;
-  padding: 15px 30px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 800;
+  flex-shrink: 0;
+}
+.product-cards{
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto;
 }
 </style>

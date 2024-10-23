@@ -8,6 +8,7 @@ export const productsService = {
             const response = await axios.get(API_URL);
             const restaurant = response.data.find(restaurant => restaurant['business-name'] === restaurantName);
             if (restaurant) {
+                console.log(restaurant.products);
                 return restaurant.products || [];  // Inicializa como arreglo si no existe
             } else {
                 throw new Error('Restaurant not found');

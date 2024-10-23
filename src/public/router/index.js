@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import LoginPage from "@/public/views/login-page.vue";
 import SignupPage from "@/public/views/signup-page.vue";
-import CasingPage from "@/admins/views/casing-page.vue";
+import CasingPage from "@/admins/views/cassing-views/casing-page.vue";
 import SavedAccountsPage from "@/admins/views/saved-accounts-page.vue";
 import SalesHistoryPage from "@/admins/views/sales-history-page.vue";
 import CasingMovementsPage from "@/admins/views/casing-movements-page.vue";
