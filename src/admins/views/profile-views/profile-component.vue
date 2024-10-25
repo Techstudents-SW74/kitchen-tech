@@ -91,16 +91,25 @@ export default {
     },
     async updateUser() {
       try {
+        // Crea un objeto para almacenar los detalles actualizados, usando los valores actuales
         const updatedDetails = {
-          id: this.userDetails.id,
           username: this.userDetails.username,
           firstName: this.userDetails.firstName,
           lastName: this.userDetails.lastName,
           email: this.userDetails.email,
           phone: this.userDetails.phone,
-          restaurant: this.userDetails.restaurant,
+          birthDate: this.userDetails.birthDate, // Este campo debe existir en userDetails
+          photo: this.userDetails.photo, // Este campo también debe existir en userDetails
+          role: "USER", // Rol fijo
+          restaurant: {
+            id: this.userDetails.restaurant.id, // El ID del restaurante se obtiene del objeto
+          },
         };
 
+        // Muestra en la consola los detalles que se enviarán
+        console.log("Datos enviados a la API:", updatedDetails);
+
+        // Realiza la llamada a la API
         await userService.updateUserById(this.userDetails.id, updatedDetails);
         alert("User details updated successfully!");
       } catch (error) {
