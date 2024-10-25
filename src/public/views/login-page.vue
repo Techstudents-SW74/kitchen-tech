@@ -74,9 +74,11 @@ export default {
             // Guardamos el id en localStorage
             localStorage.setItem('userData', JSON.stringify({ id: response.id }));
 
+            localStorage.setItem('restaurantId', response.restaurantId);
+
             // Redirigir a la vista deseada después del login
             const basePath = `/${this.username}/${response.role}`;
-            localStorage.setItem('userData', JSON.stringify({ username: this.username, id: response.id, role: response.role }));
+            localStorage.setItem('userData', JSON.stringify({ username: this.username, id: response.id, role: response.role, restaurantId: this.restaurantId }));
             this.$router.push(`${basePath}/casing`);
           } else {
             this.loginError = response.message;

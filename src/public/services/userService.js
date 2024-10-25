@@ -9,6 +9,7 @@ const getAuthToken = () => {
 const getUserById = async (userId) => {
     try {
         const token = getAuthToken();
+        console.log("Token:", token);
         const response = await axiosInstance.get(`${API_URL}/${userId}`, {
             headers: {
                 Authorization: `Bearer ${token}` // Incluye el token como Bearer en el encabezado
