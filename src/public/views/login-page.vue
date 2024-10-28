@@ -57,7 +57,7 @@ import authService from "@/public/services/authService";
 export default {
   data() {
     return {
-      username: '',  // Cambiamos de 'email' a 'username'
+      username: '',
       usernameTouched: false,
       password: '',
       passwordTouched: false,
@@ -73,24 +73,25 @@ export default {
       this.usernameTouched = true;
       this.passwordTouched = true;
 
-      // Verificamos que el username y la password sean válidos
       if (this.username && this.password.length >= 6) {
         try {
-          // Llamamos al servicio de autenticación pasando 'username' y 'password'
           const response = await authService.login(this.username, this.password);
 
           if (response.success) {
-            // Guardamos el token en localStorage
             localStorage.setItem('token', response.token);
 
-            // Guardamos el id en localStorage
-            localStorage.setItem('userData', JSON.stringify({ id: response.id }));
+            // Guarda todos los datos necesarios en userData
+            const userData = {
+              id: response.id,
+              username: this.username,
+              restaurantId: response.restaurantId,
+              role: response.role,
+            };
+            localStorage.setItem('userData', JSON.stringify(userData));
+            console.log(userData);
 
-            localStorage.setItem('restaurantId', response.restaurantId);
-
-            // Redirigir a la vista deseada después del login
+            // Redirige a la vista adecuada después del login
             const basePath = `/${this.username}/${response.role}`;
-            localStorage.setItem('userData', JSON.stringify({ username: this.username, id: response.id, role: response.role, restaurantId: this.restaurantId }));
             this.$router.push(`${basePath}/casing`);
           } else {
             this.loginError = response.message;

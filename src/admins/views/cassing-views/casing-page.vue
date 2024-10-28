@@ -47,6 +47,7 @@ import ProductGridComponent from "@/admins/views/cassing-views/components/produc
 import CartSummaryComponent from "@/admins/views/cassing-views/components/cart-summary-component.vue";
 import FavoriteProductHeaderComponent from "@/admins/views/cassing-views/components/favorite-product-header.vue";
 import {ordersService} from "@/public/services/ordersService";
+import userService from "@/public/services/userService";
 
 export default {
   components: {
@@ -70,13 +71,24 @@ export default {
     };
   },
   mounted() {
-    const userData = JSON.parse(localStorage.getItem('userData'));
-    if (userData) {
-      this.restaurantName = userData['business-name'];
-      this.userRole = userData.role;
-    }
+    this.fetchUserData();
   },
   methods: {
+    fetchUserData() {
+      try {
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        const restaurantId = userData?.restaurantId;
+
+        if (restaurantId) {
+          const restaurantData = userService.getRestaurantById(restaurantId);
+          this.restaurantName = restaurantData["name"];
+          this.userRole = userData.role;
+        }
+      } catch (error) {
+        console.error("Error fetching restaurant data: ", error);
+      }
+    },
+
     toggleEditMode(){
       this.isEditMode = !this.isEditMode;
     },

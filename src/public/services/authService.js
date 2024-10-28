@@ -6,7 +6,7 @@ export default {
     async login(username, password) {
         try {
             const response = await axiosInstance.post(`${API_URL}/login`, { username, password });
-            return { success: true, token: response.data.token, id: response.data.id, restaurantId: response.data.restaurantId};
+            return { success: true, token: response.data.token, id: response.data.id, role: response.data.role, restaurantId: response.data.restaurantId};
         } catch (error) {
             return { success: false, message: 'Invalid username or password' };
         }
