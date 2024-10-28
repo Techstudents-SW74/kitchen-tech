@@ -23,12 +23,20 @@
         <!-- Input para la contraseña -->
         <div class="form-field">
           <label for="password">Password</label>
-          <input
-              type="password"
-              id="password"
-              v-model="password"
-              placeholder="Enter your password"
-          />
+          <div class="password-wrapper">
+            <input
+                :type="passwordVisible ? 'text' : 'password'"
+                id="password"
+                v-model="password"
+                placeholder="Enter your password"
+            />
+            <img
+                :src="passwordVisible ? require('/public/assets/images/show.png') : require('/public/assets/images/hide.png')"
+                @click="togglePasswordVisibility"
+                class="password-toggle"
+                alt="toggle visibility"
+            />
+          </div>
           <span v-if="!password && passwordTouched">Please enter a password</span>
           <span v-if="password.length > 0 && password.length < 6">Your password must have at least 6 characters</span>
         </div>
@@ -53,10 +61,14 @@ export default {
       usernameTouched: false,
       password: '',
       passwordTouched: false,
+      passwordVisible: false,
       loginError: null
     };
   },
   methods: {
+    togglePasswordVisibility() {
+      this.passwordVisible = !this.passwordVisible;
+    },
     async onSubmit() {
       this.usernameTouched = true;
       this.passwordTouched = true;
@@ -177,5 +189,25 @@ export default {
   color: #b14343;
   font-size: 0.8rem;
   margin-left: 5px;
+}
+.password-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  flex: 1;
+}
+
+.password-wrapper button {
+  background: none;
+  border: none;
+  color: #31304A;
+  cursor: pointer;
+  margin-left: 5px;
+}
+.password-toggle{
+  width: 25px;
+  margin: 0 5px;
 }
 </style>

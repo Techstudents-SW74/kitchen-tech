@@ -11,16 +11,20 @@ export default {
             return { success: false, message: 'Invalid username or password' };
         }
     },
-    async signup(userData) {
+    async signupRestaurant(userData) {
         try {
-            const response = await axiosInstance.post(`${API_URL}/register`, userData);
+            const response = await axiosInstance.post(`${API_URL}/register-restaurant`, userData);
             return { success: true, message: response.data.message || 'User registered successfully' };
         } catch (error) {
             return { success: false, message: error.response?.data?.message || 'An error occurred' };
         }
     },
-    async getRestaurants() {
-        const response = await axiosInstance.get('/restaurant');
-        return response.data;
-    }
+    async signupStaff(userData) {
+        try {
+            const response = await axiosInstance.post(`${API_URL}/register-staff`, userData);
+            return { success: true, message: response.data.message || 'User registered successfully' };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.message || 'An error occurred' };
+        }
+    },
 };

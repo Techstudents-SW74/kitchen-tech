@@ -7,63 +7,77 @@
       </div>
 
       <form @submit.prevent="onSubmit" class="signup-form">
+        <!-- Username Field -->
         <div class="form-row">
           <div class="form-field">
             <label for="username">Username</label>
-            <input type="text" id="username" v-model="username" placeholder="Ex. fcastr234123o" required />
+            <input type="text" id="username" v-model="username" @blur="touched.username = true" placeholder="Ex. adminLaRomana" required />
+            <span v-if="touched.username && usernameError" class="error">{{ usernameError }}</span>
           </div>
         </div>
 
+        <!-- Name Field -->
         <div class="form-row">
           <div class="form-field">
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" v-model="firstName" placeholder="Ex. Fabrizzio" required />
-          </div>
-          <div class="form-field">
-            <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" v-model="lastName" placeholder="Ex. Castro" required />
+            <label for="name">Restaurant Name</label>
+            <input type="text" id="name" v-model="name" @blur="touched.name = true" placeholder="Ex. La Romana" required />
+            <span v-if="touched.name && !name" class="error">Este campo es obligatorio</span>
           </div>
         </div>
 
+        <!-- Email and Phone Fields -->
         <div class="form-row">
           <div class="form-field">
             <label for="email">Email</label>
-            <input type="email" id="email" v-model="email" placeholder="Ex. email@example.com" required />
+            <input type="email" id="email" v-model="email" @blur="touched.email = true" placeholder="Ex. email@example.com" required />
+            <span v-if="touched.email && emailError" class="error">{{ emailError }}</span>
           </div>
           <div class="form-field">
             <label for="phone">Phone</label>
-            <input type="tel" id="phone" v-model="phone" placeholder="Ex. 904688149" required />
+            <input type="tel" id="phone" v-model="phone" @blur="touched.phone = true" placeholder="Ex. 904688149" required />
+            <span v-if="touched.phone && phoneError" class="error">{{ phoneError }}</span>
           </div>
         </div>
 
+        <!-- Password and Confirm Password Fields -->
         <div class="form-row">
           <div class="form-field">
             <label for="password">Password</label>
-            <input type="password" id="password" v-model="password" placeholder="Create your password" required />
+            <div class="password-wrapper">
+              <input :type="passwordVisible ? 'text' : 'password'"
+                     id="password"
+                     v-model="password"
+                     @blur="touched.password = true"
+                     placeholder="Create your password"
+                     required />
+              <img
+                  :src="passwordVisible ? require('/public/assets/images/show.png') : require('/public/assets/images/hide.png')"
+                  @click="togglePasswordVisibility"
+                  class="password-toggle"
+                  alt="toggle visibility"
+              />
+            </div>
+            <span v-if="touched.password && passwordError" class="error">{{ passwordError }}</span>
           </div>
+
           <div class="form-field">
             <label for="confirmPassword">Confirm Password</label>
-            <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Confirm your password" required />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-field">
-            <label for="birthDate">Birth Date</label>
-            <input type="date" id="birthDate" v-model="birthDate" required />
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="restaurant">Restaurant</label>
-              <select id="restaurant" v-model="selectedRestaurantId" class="dropdown-form-field" required>
-                <option value="" disabled>Select a restaurant</option>
-                <option v-for="restaurant in restaurants" :key="restaurant.id" :value="restaurant.id">
-                  {{ restaurant.name }}
-                </option>
-              </select>
+            <div class="password-wrapper">
+              <input :type="confirmPasswordVisible ? 'text' : 'password'"
+                     id="confirmPassword"
+                     v-model="confirmPassword"
+                     @blur="touched.confirmPassword = true"
+                     placeholder="Confirm your password"
+                     required />
+              <img
+                  :src="confirmPasswordVisible ? require('/public/assets/images/show.png') : require('/public/assets/images/hide.png')"
+                  @click="toggleConfirmPasswordVisibility"
+                  class="password-toggle"
+                  alt="toggle visibility"
+              />
             </div>
+            <span v-if="touched.confirmPassword && confirmPasswordError" class="error">{{ confirmPasswordError }}</span>
           </div>
-
         </div>
 
         <button class="signup-button" type="submit">Sign Up</button>
@@ -77,43 +91,97 @@
 </template>
 
 <script>
-import authService from "@/public/services/authService"
+import authService from "@/public/services/authService";
 
 export default {
   data() {
     return {
       username: '',
-      firstName: '',
-      lastName: '',
+      name: '',
       email: '',
       phone: '',
       password: '',
       confirmPassword: '',
-      birthDate: '',
-      selectedRestaurantId: null,
-      restaurants: [] // Lista de restaurantes
+      city: '',
+      district: '',
+      passwordVisible: false,
+      confirmPasswordVisible: false,
+      touched: {
+        username: false,
+        name: false,
+        email: false,
+        phone: false,
+        password: false,
+        confirmPassword: false,
+        city: false,
+        district: false,
+      }
     };
   },
-  async created() {
-    this.restaurants = await authService.getRestaurants(); // Cargar los restaurantes al crear el componente
+  computed: {
+    usernameError() {
+      if (!this.username) return "This field is mandatory";
+      if (/\s/.test(this.username)) return "Username must not have blank spaces";
+      if (!/^[a-zA-Z0-9]+$/.test(this.username)) return "The username must not have special characters";
+      return null;
+    },
+    emailError() {
+      if (!this.email) return "This field is mandatory";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)) return "Email not valid";
+      return null;
+    },
+    phoneError() {
+      if (!this.phone) return "This field is mandatory";
+      if (!/^\d{9}$/.test(this.phone)) return "Phone number not valid";
+      return null;
+    },
+    passwordError() {
+      if (!this.password) return "This field is mandatory";
+      if (this.password.length < 6) return "Password must have 6 characters at least";
+      if (!/[a-z]/.test(this.password)) return "Must contain 1 lowercase at least";
+      if (!/[A-Z]/.test(this.password)) return "Must contain 1 uppercase at least";
+      if (!/[!@#$%^&*]/.test(this.password)) return "Must contain 1 special character at least";
+      return null;
+    },
+    confirmPasswordError() {
+      if (!this.confirmPassword) return "This field is mandatory";
+      if (this.confirmPassword !== this.password) return "Passwords don't match";
+      return null;
+    }
   },
   methods: {
+    togglePasswordVisibility() {
+      this.passwordVisible = !this.passwordVisible;
+    },
+    toggleConfirmPasswordVisibility() {
+      this.confirmPasswordVisible = !this.confirmPasswordVisible;
+    },
     async onSubmit() {
+      if (
+          this.usernameError ||
+          this.emailError ||
+          this.phoneError ||
+          this.passwordError ||
+          this.confirmPasswordError
+      ) {
+        alert("There are errors in the form. Please check it before continue");
+        return;
+      }
+
       const userData = {
         username: this.username,
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
+        name: this.name,
+        email: this.email.toLowerCase(),
         password: this.password,
         phone: this.phone,
-        birthDate: this.birthDate,
-        photo: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png", // Puedes cambiar esto si quieres que el usuario ingrese una foto
-        role: "USER",
-        restaurant: { id: this.selectedRestaurantId }
+        city: this.city,
+        district: this.district,
+        image: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png",
+        role: 0,
       };
 
       try {
-        const response = await authService.signup(userData);
+        const response = await authService.signupRestaurant(userData);
         if (response.success) {
           this.$router.push('/login');
         } else {
@@ -123,31 +191,12 @@ export default {
         console.error('Error during signup process:', error);
         alert('An error occurred: ' + error.message);
       }
-    },
+    }
   }
 };
 </script>
 
-
 <style scoped>
-.dropdown-form-field {
-  width: 100%;
-  padding: 12px;
-  font-size: 1rem;
-  border: 1px solid #ccc; /* Añadir un borde gris claro */
-  border-radius: 5px;
-  color: #31304A;
-  margin: 10px 0;
-  font-weight: 500;
-  box-sizing: border-box;
-  background-color: #fff; /* Fondo blanco */
-  appearance: none; /* Elimina la flecha predeterminada del navegador */
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2331304A"><path d="M7 10l5 5 5-5H7z"/></svg>'); /* Flecha personalizada */
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 12px;
-}
-
 .card-container {
   display: flex;
   justify-content: center;
@@ -246,6 +295,27 @@ span {
 }
 .login-redirect a {
   color: #31304A;
+}
+
+.password-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  flex: 1;
+}
+
+.password-wrapper button {
+  background: none;
+  border: none;
+  color: #31304A;
+  cursor: pointer;
+  margin-left: 5px;
+}
+.password-toggle{
+  width: 25px;
+  margin-left: 5px;
 }
 </style>
 
