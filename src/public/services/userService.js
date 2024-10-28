@@ -16,6 +16,7 @@ const getRestaurantById = async (restaurantId) => {
                 Authorization: `Bearer ${token}` // Incluye el token como Bearer en el encabezado
             }
         });
+        console.log(response.data);
         return response.data; // Devuelve los datos del usuario
     } catch (error) {
         console.error("Error fetching user:", error.response ? error.response.data : error.message);

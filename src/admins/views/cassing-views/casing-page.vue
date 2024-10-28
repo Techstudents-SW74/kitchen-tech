@@ -74,14 +74,15 @@ export default {
     this.fetchUserData();
   },
   methods: {
-    fetchUserData() {
+    async fetchUserData() {
       try {
         const userData = JSON.parse(localStorage.getItem("userData"));
-        const restaurantId = userData?.restaurantId;
+        console.log(userData.restaurantId)
+        const restaurantId = userData?.restaurantId; 
 
         if (restaurantId) {
-          const restaurantData = userService.getRestaurantById(restaurantId);
-          this.restaurantName = restaurantData["name"];
+          const restaurantData = await userService.getRestaurantById(restaurantId);
+          this.restaurantName = restaurantData.name;
           this.userRole = userData.role;
         }
       } catch (error) {
