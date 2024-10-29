@@ -17,12 +17,23 @@
         </div>
       </li>
     </ul>
+    <ul v-else-if="filteredAccounts.length === 0 && searchQuery" class="dropdown">
+      <li class="account-card">
+        <div class="card-content">
+          <div class="no-products">
+            <label>You don't have created any product yet.</label>
+          </div>
+        </div>
+      </li>
+    </ul>
     <button class="table-button" @click="toggleTablesMode">Show tables</button>
     <button class="account-button" @click="toggleAccountsMode">Show Account</button>
   </div>
 </template>
 
 <script>
+import {accountService} from "@/public/services/accountsService";
+
 export default {
   props: {
     restaurantName: {
@@ -39,7 +50,7 @@ export default {
   },
   mounted() {
     if(this.restaurantName) {
-      this.loadProducts();
+      this.loadAccounts();
     } else {
       console.error('Restaurant name is required');
     }
@@ -50,7 +61,16 @@ export default {
   },
   methods: {
     async loadAccounts() {
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const restaurantId = userData.restaurantId;
 
+      try {
+        const accounts = await accountService.getAccountsByRestaurant(restaurantId);
+        this.accounts = accounts;
+        this.filteredProducts = this.accounts;
+      } catch (error) {
+        console.error("Failed to load products", error);
+      }
     },
     filterAccounts() {
       try{
@@ -60,6 +80,11 @@ export default {
         );
       } catch (error){
         console.log("There are not accounts to show")
+      }
+    },
+    handleClickOutside(event) {
+      if (!this.$el.contains(event.target)) {
+        this.filteredAccounts = [];
       }
     },
     onSearchFocus() {
@@ -112,7 +137,7 @@ export default {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-width: 920px;
+  max-width: 705px;
 }
 .dropdown li {
   padding: 10px;
