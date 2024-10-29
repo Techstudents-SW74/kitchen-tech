@@ -21,7 +21,7 @@
           <div class="form-field">
             <label for="name">Restaurant Name</label>
             <input type="text" id="name" v-model="name" @blur="touched.name = true" placeholder="Ex. La Romana" required />
-            <span v-if="touched.name && !name" class="error">Este campo es obligatorio</span>
+            <span v-if="touched.name && !name" class="error">This field is mandatory</span>
           </div>
         </div>
 
