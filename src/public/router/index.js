@@ -2,7 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import LoginPage from "@/public/views/login-page.vue";
 import SignupPage from "@/public/views/signup-page.vue";
 import CasingPage from "@/admins/views/cassing-views/casing-page.vue";
-import SavedAccountsPage from "@/admins/views/saved-accounts-page.vue";
+import SavedAccountsPage from "@/admins/views/saved-accounts-views/saved-accounts-page.vue";
 import SalesHistoryPage from "@/admins/views/sales-history-page.vue";
 import CasingMovementsPage from "@/admins/views/casing-movements-page.vue";
 import ProductsComponent from "@/admins/views/products-views/products-page.vue";
@@ -11,6 +11,7 @@ import InventoryComponent from "@/admins/views/inventory-page.vue";
 import CreateNewWaiterComponent from "@/admins/views/profile-views/create-new-waiter-page.vue";
 import ProfileComponent from "@/admins/views/profile-views/profile-component.vue";
 import ProductConfigPage from "@/admins/views/products-views/product-config-page.vue";
+import TablesPage from "@/admins/views/saved-accounts-views/tables-page.vue";
 
 const routes = [
     {
@@ -40,6 +41,12 @@ const routes = [
         path: '/:restaurantName/:role/saved-accounts',
         name: 'SavedAccounts',
         component: SavedAccountsPage,
+        props: true
+    },
+    {
+        path: '/:restaurantName/:role/tables',
+        name: 'Tables',
+        component: TablesPage,
         props: true
     },
     {
