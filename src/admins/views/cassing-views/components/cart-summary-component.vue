@@ -5,8 +5,8 @@
     <div class="cart-item" v-for="(item, index) in localCart" :key="item.id">
       <div class="item-header" @click="toggleItemInputs(index)">
         <div class="item-info">
-          <span class="item-name">{{ item.name }}</span>
-          <span class="item-unit">{{ item.quantity }} Un - S/{{ item.price }}</span>
+          <span class="item-name">{{ item.productName }}</span>
+          <span class="item-unit">{{ item.quantity }} Un - S/{{ item.productPrice }}</span>
         </div>
         <button class="remove-button" @click.stop="removeItem(index)">
           <i>-</i>

@@ -18,13 +18,20 @@
               <button class="add-button" @click="addProduct">Add Product</button>
             </div>
             <div class="product-cards">
-              <ProductCardComponent
-                  v-for="product in filteredProducts"
-                  :key="product.id"
-                  :product="product"
-                  @edit-product="editProduct"
-                  @delete-product="deleteProduct"
-              />
+              <template v-if="products.length === 0">
+                <div class="no-products">
+                  <label>You don't have created any product yet.</label>
+                </div>
+              </template>
+              <template v-else-if="products.length !== 0">
+                <ProductCardComponent
+                    v-for="product in filteredProducts"
+                    :key="product.id"
+                    :product="product"
+                    @edit-product="editProduct"
+                    @delete-product="deleteProduct"
+                />
+              </template>
             </div>
           </div>
         </main>
@@ -38,6 +45,7 @@ import HeaderComponent from "@/admins/components/header-component.vue";
 import SidebarComponent from "@/admins/components/sidebar-component.vue";
 import ProductCardComponent from "@/admins/views/products-views/components/product-card-component.vue";
 import { productsService } from "@/public/services/productsService";
+import userService from "@/public/services/userService";
 
 export default {
   components: {
@@ -55,6 +63,8 @@ export default {
     };
   },
   mounted() {
+    this.fetchUserData();
+
     const userData = JSON.parse(localStorage.getItem('userData'));
     if (userData) {
       this.restaurantName = userData['business-name'];
@@ -65,8 +75,24 @@ export default {
   },
 
   methods: {
+    async fetchUserData() {
+      try {
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        const restaurantId = userData?.restaurantId;
+
+        if (restaurantId) {
+          const restaurantData = await userService.getRestaurantById(restaurantId);
+          this.restaurantName = restaurantData.name;
+          this.userRole = userData.role;
+        }
+      } catch (error) {
+        console.error("Error fetching restaurant data: ", error);
+      }
+    },
+
     async loadProducts() {
-      const restaurantId = localStorage.getItem('restaurantId'); // Obtén el ID del restaurante
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const restaurantId = userData.restaurantId;
 
       try {
         const products = await productsService.getProductsByRestaurant(restaurantId);
@@ -77,10 +103,15 @@ export default {
       }
     },
     filterProducts() {
-      const query = this.searchQuery.toLowerCase(); // Convierte la consulta a minúsculas
-      this.filteredProducts = this.products.filter((product) =>
-          product.productName.toLowerCase().includes(query) // Asegúrate de usar el nombre correcto
-      );
+      try{
+        const query = this.searchQuery.toLowerCase(); // Convierte la consulta a minúsculas
+        this.filteredProducts = this.products.filter((product) =>
+            product.productName.toLowerCase().includes(query) // Asegúrate de usar el nombre correcto
+        );
+      } catch (error){
+        console.log("There are not products to show")
+      }
+
     },
     addProduct() {
       this.$router.push(`/${this.restaurantName}/${this.userRole}/new-product`);
@@ -92,27 +123,17 @@ export default {
       if (confirm("Are you sure you want to remove this product?")) {
         try {
           const response = await productsService.deleteProduct(productId);
+          console.log(response)
           alert(response.message || "Product deleted successfully");
           // Vuelve a cargar los productos después de la eliminación
           await this.loadProducts();
         } catch (error) {
           console.error('Error during product deletion process:', error);
-          alert('An error occurred: ' + error.message);
         }
       } else {
         alert("Deletion canceled.");
       }
     },
-
-
-    async fetchProducts(){
-      try {
-        const response = await productsService.getProductsByRestaurant(this.restaurantName);
-        this.products = response.data;
-      } catch (error) {
-        console.error('Error fetching products: ', error)
-      }
-    }
   }
 }
 </script>
@@ -153,6 +174,10 @@ export default {
 }
 
 /* Estilos de la vista actual */
+.no-products{
+  text-align: center;
+  color: #31304A;
+}
 .page-container {
   margin-top: 100px; /* Desplaza el contenido principal por debajo del header */
   padding: 20px;

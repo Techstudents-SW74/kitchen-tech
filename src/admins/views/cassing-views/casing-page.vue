@@ -77,8 +77,7 @@ export default {
     async fetchUserData() {
       try {
         const userData = JSON.parse(localStorage.getItem("userData"));
-        console.log(userData.restaurantId)
-        const restaurantId = userData?.restaurantId; 
+        const restaurantId = userData?.restaurantId;
 
         if (restaurantId) {
           const restaurantData = await userService.getRestaurantById(restaurantId);

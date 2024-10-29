@@ -1,7 +1,7 @@
 <template>
   <div class="product-card">
     <div class="card-header">
-      <img :src="product.productImageUrl" alt="Product Image" class="product-image" />
+      <img v-if="product.productImageUrl !== null" :src="product.productImageUrl" alt="Product Image" class="product-image" />
       <p class="product-name">{{ product.productName }}</p>
       <p class="product-info">{{ product.category }}</p>
     </div>

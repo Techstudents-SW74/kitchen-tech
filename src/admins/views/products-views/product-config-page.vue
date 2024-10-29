@@ -44,6 +44,7 @@
 import HeaderComponent from "@/admins/components/header-component.vue";
 import SidebarComponent from "@/admins/components/sidebar-component.vue";
 import { productsService } from "@/public/services/productsService";
+import userService from "@/public/services/userService";
 
 export default {
   components: {
@@ -64,6 +65,8 @@ export default {
     };
   },
   mounted() {
+    this.fetchUserData();
+
     const userData = JSON.parse(localStorage.getItem('userData')); // Obtener los datos del usuario
     const restaurantId = localStorage.getItem('restaurantId'); // Obtener el restaurantId
     if (userData) {
@@ -80,6 +83,21 @@ export default {
     }
   },
   methods: {
+    async fetchUserData() {
+      try {
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        const restaurantId = userData?.restaurantId;
+
+        if (restaurantId) {
+          const restaurantData = await userService.getRestaurantById(restaurantId);
+          this.restaurantName = restaurantData.name;
+          this.userRole = userData.role;
+        }
+      } catch (error) {
+        console.error("Error fetching restaurant data: ", error);
+      }
+    },
+
     async loadProduct() {
       try {
         const productId = this.$route.params.productId; // Obtén el ID del producto desde los parámetros de la ruta
@@ -103,40 +121,24 @@ export default {
       this.product.productPrice = parseFloat(this.product.productPrice);
       this.product.restaurantId = Number(this.product.restaurantId);
 
-      console.log('Product to send:', this.product);
-
       try {
-        if (this.isEdit) {
-          const response = await productsService.updateProduct(this.product);
-          console.log('Response from update:', response); // Log del response
+        const response = this.isEdit
+            ? await productsService.updateProduct(this.product)
+            : await productsService.addProduct(this.product);
 
-          // Verifica el estado de la respuesta
-          if (response && (response.status === 200 || response.success)) {
-            alert('Product updated successfully.');
-            this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
-          } else {
-            console.error('Update response error:', response);
-            this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
-          }
+        if (response) {
+          alert(`Product ${this.isEdit ? 'updated' : 'created'} successfully.`);
         } else {
-          const response = await productsService.addProduct(this.product);
-          console.log('Response from create:', response);
-
-          // Verifica el estado de la respuesta
-          if (response && (response.status === 201 || response.success)) {
-            alert('Product created successfully.');
-            this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
-          } else {
-            console.error('Creation response error:', response);
-            this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
-          }
+          console.error(`${this.isEdit ? 'Update' : 'Creation'} response error:`, response);
         }
+
+        this.$router.push(`/${this.restaurantName}/${this.userRole}/products`);
+
       } catch (error) {
         console.error('Error during product creation/update process:', error);
         alert('An error occurred: ' + (error.response ? error.response.data.message : error.message));
       }
     }
-
   }
 }
 </script>

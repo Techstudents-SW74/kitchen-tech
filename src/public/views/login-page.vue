@@ -88,7 +88,6 @@ export default {
               role: response.role,
             };
             localStorage.setItem('userData', JSON.stringify(userData));
-            console.log(userData);
 
             // Redirige a la vista adecuada después del login
             const basePath = `/${this.username}/${response.role}`;

@@ -11,8 +11,8 @@
     <ul v-if="filteredProducts.length && searchQuery" class="dropdown">
       <li v-for="product in filteredProducts" :key="product.id" class="product-card">
         <div class="card-content">
-          <span class="product-name">{{ product.name }}</span>
-          <span class="product-price">S/.{{ product.price }}</span>
+          <span class="product-name">{{ product.productName }}</span>
+          <span class="product-price">S/.{{ product.productPrice }}</span>
         </div>
         <button @click="addProductToCart(product)" class="add-button">+</button>
       </li>
@@ -60,20 +60,26 @@ export default {
   },
   methods: {
     async loadProducts() {
-      console.log('Restaurant Name: ', this.restaurantName);
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const restaurantId = userData.restaurantId;
+
       try {
-        const products = await productsService.getProductsByRestaurant(this.restaurantName);
+        const products = await productsService.getProductsByRestaurant(restaurantId);
         this.products = products;
         this.filteredProducts = this.products;
       } catch (error) {
-        console.log("Failed to load products", error);
+        console.error("Failed to load products", error);
       }
     },
     filterProducts() {
-      const query = this.searchQuery.toLowerCase();
-      this.filteredProducts = this.products.filter((product) =>
-          product.name.toLowerCase().includes(query)
-      );
+      try{
+        const query = this.searchQuery.toLowerCase(); // Convierte la consulta a minúsculas
+        this.filteredProducts = this.products.filter((product) =>
+            product.productName.toLowerCase().includes(query) // Asegúrate de usar el nombre correcto
+        );
+      } catch (error){
+        console.log("There are not products to show")
+      }
     },
     addProductToSlot(product){
       if(this.selectedSlot !== null){

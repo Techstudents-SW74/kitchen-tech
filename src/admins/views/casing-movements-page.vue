@@ -13,6 +13,7 @@
 <script>
 import HeaderComponent from "@/admins/components/header-component.vue";
 import SidebarComponent from "@/admins/components/sidebar-component.vue";
+import userService from "@/public/services/userService";
 
 export default {
   components: {
@@ -26,10 +27,22 @@ export default {
     };
   },
   mounted() {
-    const userData = JSON.parse(localStorage.getItem('userData'));
-    if (userData) {
-      this.restaurantName = userData['business-name'];
-      this.userRole = userData.role;
+    this.fetchUserData();
+  },
+  methods: {
+    async fetchUserData() {
+      try {
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        const restaurantId = userData?.restaurantId;
+
+        if (restaurantId) {
+          const restaurantData = await userService.getRestaurantById(restaurantId);
+          this.restaurantName = restaurantData.name;
+          this.userRole = userData.role;
+        }
+      } catch (error) {
+        console.error("Error fetching restaurant data: ", error);
+      }
     }
   }
 }

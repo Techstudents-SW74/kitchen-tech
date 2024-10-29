@@ -1,33 +1,33 @@
 <template>
   <div class="layout">
-    <sidebar-component v-if="userDetails.restaurant" :restaurant-name="userDetails.restaurant.name" :role="userRole" class="sidebar" />
+    <sidebar-component :restaurant-name="restaurantName" :role="userRole" class="sidebar" />
     <div class="main-content">
-      <header-component v-if="userDetails.restaurant" :restaurant-name="userDetails.restaurant.name" :role="userRole" class="header" />
+      <header-component :restaurant-name="restaurantName" :role="userRole" class="header" />
       <div class="page-container">
         <h1>Edit User Details</h1>
-        <form @submit.prevent="updateUser" class="form">
+        <!-- <form @submit.prevent="updateUser" class="form">
           <div class="form-group">
             <label for="username">Username:</label>
-            <input type="text" id="username" v-model="userDetails.username" required />
+            <input type="text" id="username" v-model="userData.username" required />
           </div>
           <div class="form-group">
             <label for="first-name">First Name:</label>
-            <input type="text" id="first-name" v-model="userDetails.firstName" required />
+            <input type="text" id="first-name" v-model="userData.firstName" required />
           </div>
           <div class="form-group">
             <label for="last-name">Last Name:</label>
-            <input type="text" id="last-name" v-model="userDetails.lastName" required />
+            <input type="text" id="last-name" v-model="userData.lastName" required />
           </div>
           <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" v-model="userDetails.email" required />
+            <input type="email" id="email" v-model="userData.email" required />
           </div>
           <div class="form-group">
             <label for="phone">Phone:</label>
-            <input type="tel" id="phone" v-model="userDetails.phone" required />
+            <input type="tel" id="phone" v-model="userData.phone" required />
           </div>
           <button type="submit" class="submit-button">Update</button>
-        </form>
+        </form> -->
       </div>
     </div>
   </div>
@@ -45,64 +45,43 @@ export default {
   },
   data() {
     return {
-      userDetails: {
-        id: null,
-        username: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        restaurant: {
-          id: null,
-          name: '',
-          email: '',
-          description: '',
-          image: '',
-          logo: '',
-          city: '',
-          district: '',
-        },
-      },
+      restaurantName: '',
       userRole: '',
-      restaurantDetails: {
-        restaurant: {},
-      },
     };
   },
   mounted() {
-    const userData = JSON.parse(localStorage.getItem('userData'));
-    if (userData) {
-      this.userRole = userData.role;
-      this.loadUserDetails(userData.id);
-    }
+    this.fetchUserData();
   },
   methods: {
-    async loadUserDetails(userId) {
+    async fetchUserData() {
       try {
-        const user = await userService.getUserById(userId);
-        if (user) {
-          this.userDetails = { ...user };
-        } else {
-          console.warn("User not found.");
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        const restaurantId = userData?.restaurantId;
+
+        if (restaurantId) {
+          const restaurantData = await userService.getRestaurantById(restaurantId);
+          this.restaurantName = restaurantData.name;
+          this.userRole = userData.role;
         }
       } catch (error) {
-        console.error("Error loading user details:", error);
+        console.error("Error fetching restaurant data: ", error);
       }
     },
-    async updateUser() {
+
+    /*async updateUser() {
       try {
         // Crea un objeto para almacenar los detalles actualizados, usando los valores actuales
         const updatedDetails = {
-          username: this.userDetails.username,
-          firstName: this.userDetails.firstName,
-          lastName: this.userDetails.lastName,
-          email: this.userDetails.email,
-          phone: this.userDetails.phone,
-          birthDate: this.userDetails.birthDate, // Este campo debe existir en userDetails
-          photo: this.userDetails.photo, // Este campo también debe existir en userDetails
+          username: this.userData.username,
+          firstName: this.userData.firstName,
+          lastName: this.userData.lastName,
+          email: this.userData.email,
+          phone: this.userData.phone,
+          birthDate: this.userData.birthDate, // Este campo debe existir en userDetails
+          photo: this.userData.photo, // Este campo también debe existir en userDetails
           role: "USER", // Rol fijo
           restaurant: {
-            id: this.userDetails.restaurant.id, // El ID del restaurante se obtiene del objeto
+            id: this.userData.restaurant.id, // El ID del restaurante se obtiene del objeto
           },
         };
 
@@ -110,12 +89,12 @@ export default {
         console.log("Datos enviados a la API:", updatedDetails);
 
         // Realiza la llamada a la API
-        await userService.updateUserById(this.userDetails.id, updatedDetails);
+        await userService.updateUserById(this.userData.id, updatedDetails);
         alert("User details updated successfully!");
       } catch (error) {
         console.error("Error updating user details:", error);
       }
-    },
+    },*/
   },
 }
 </script>
