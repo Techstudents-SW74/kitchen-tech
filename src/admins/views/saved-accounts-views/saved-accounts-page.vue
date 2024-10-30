@@ -36,6 +36,7 @@ import SidebarComponent from "@/admins/components/sidebar-component.vue";
 import userService from "@/public/services/userService";
 import SearchbarComponent from "@/admins/views/saved-accounts-views/components/searchbar-component.vue";
 import AccountCardComponent from "@/admins/views/saved-accounts-views/components/account-card-component.vue";
+import {accountService} from "@/public/services/accountsService";
 
 export default {
   components: {
@@ -54,6 +55,15 @@ export default {
   },
   mounted() {
     this.fetchUserData();
+
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    if (userData) {
+      this.restaurantName = userData['business-name'];
+      this.userRole = userData.role;
+      this.restaurantId = localStorage.getItem('restaurantId'); // Obtener el ID del restaurante de localStorage
+    }
+
+    this.loadAccounts();
   },
   methods: {
     async fetchUserData() {
@@ -69,7 +79,35 @@ export default {
       } catch (error) {
         console.error("Error fetching restaurant data: ", error);
       }
-    }
+    },
+    async loadAccounts() {
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const restaurantId = userData.restaurantId;
+
+      try {
+        const accounts = await accountService.getAccountsByRestaurant(restaurantId);
+        this.accounts = accounts;
+        this.filteredProducts = this.accounts;
+      } catch (error) {
+        console.error("Failed to load products", error);
+      }
+    },
+    async deleteAccount(accountId) {
+      console.log(accountId)
+      if (confirm("Are you sure you want to remove this account?")) {
+        try {
+          const response = await accountService.deleteAccount(accountId);
+          console.log(response)
+          alert(response.message || "Account deleted successfully");
+          // Vuelve a cargar los productos después de la eliminación
+          await this.loadAccounts();
+        } catch (error) {
+          console.error('Error during account deletion process:', error);
+        }
+      } else {
+        alert("Deletion canceled.");
+      }
+    },
   }
 }
 </script>
@@ -113,6 +151,9 @@ export default {
   width: 100%;
   max-width: 1000px;
   margin: 20px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 5px;
 }
 .no-accounts{
   text-align: center;

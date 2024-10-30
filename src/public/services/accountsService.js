@@ -65,5 +65,19 @@ export const accountService = {
             console.error('Error adding products to account:', error.response ? error.response.data : error.message);
             throw error;
         }
-    }
+    },
+    async deleteAccount(accountId) {
+        try {
+            const token = getAuthToken();
+            const response = await axiosInstance.delete(`${API_URL}/${accountId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Incluye el token como Bearer en el encabezado
+                }
+            });
+            return response.data; // Retorna los datos de la respuesta
+        } catch (error) {
+            console.error('Error deleting product:', error.response ? error.response.data : error.message);
+            throw error; // Lanza el error para manejarlo en la llamada
+        }
+    },
 }
