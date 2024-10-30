@@ -50,8 +50,13 @@ export default {
       console.log('New Waiter');
     },
     logout() {
-      this.$router.push('/login');
-      console.log('Logout');
+      if(confirm("Are you sure you want to logout?")) {
+        this.$router.push('/login');
+        console.log('Logout');
+      } else {
+        console.log('Logout canceled');
+      }
+
     }
   }
 }
