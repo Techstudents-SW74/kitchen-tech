@@ -49,6 +49,7 @@
 
 <script>
 import SaveOrderComponent from "@/admins/views/cassing-views/components/save-order-component.vue";
+import {accountService} from "@/public/services/accountsService";
 
 export default {
   components: {SaveOrderComponent},
@@ -108,9 +109,33 @@ export default {
       this.$emit('update-cart', this.localCart); // Enviar al padre la actualización del carrito
     },
 
-    saveOrder(orderData) {
-      console.log(orderData);
-      this.$emit('save-sale');
+    async saveOrder(orderData) {
+      try {
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        const restaurantId = userData?.restaurantId;
+
+        const account = {
+          accountName: orderData.accountName,
+          restaurantId: restaurantId, // Obtenemos el ID del restaurante del usuario
+          state: 0,
+          totalAccount: 0
+        };
+        const response = await accountService.addAccount(account);
+        const accountId = response.id;
+
+        for (const item of this.localCart) {
+          const accountProduct = {
+            accountId,
+            productId: item.id,
+            quantity: item.quantity
+          };
+          await accountProduct.addAccountProduct(accountProduct);
+        }
+        alert("Account Saved Successfully!");
+        this.closeModal();
+      } catch (error) {
+        console.error("Error Saving the Account:", error);
+      }
     },
     closeModal(){
       this.showModal = false;
