@@ -5,7 +5,6 @@
       <header-component :restaurant-name="restaurantName" :role="userRole" class="header" />
       <div class="page-container">
         <main class="products-page">
-          <!-- Aquí está el contenedor común para los elementos que deben estar alineados -->
           <div class="content-wrapper">
             <div class="products-header">
               <input
@@ -20,7 +19,7 @@
             <div class="product-cards">
               <template v-if="products.length === 0">
                 <div class="no-products">
-                  <label>You don't have created any product yet.</label>
+                  <label>You don't have register any account yet.</label>
                 </div>
               </template>
               <template v-else-if="products.length !== 0">
@@ -171,20 +170,13 @@ export default {
   background-color: #F6F5FA; /* Fondo blanco para la zona de contenido */
   height: calc(100vh - 100px); /* Ajusta el alto para evitar desbordamientos */
   overflow-y: auto; /* Permite el scroll si el contenido es muy largo */
+  font-family: 'Red Hat Display', sans-serif;
 }
 
 /* Estilos de la vista actual */
 .no-products{
   text-align: center;
   color: #31304A;
-}
-.page-container {
-  margin-top: 100px; /* Desplaza el contenido principal por debajo del header */
-  padding: 20px;
-  background-color: #F6F5FA; /* Fondo blanco para la zona de contenido */
-  height: calc(100vh - 100px); /* Ajusta el alto para evitar desbordamientos */
-  overflow-y: auto; /* Permite el scroll si el contenido es muy largo */
-  font-family: 'Red Hat Display', sans-serif;
 }
 .products-header {
   display: flex;

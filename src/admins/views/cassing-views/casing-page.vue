@@ -29,7 +29,6 @@
               :igv="igv"
               :total="total"
               @add-customer="addCustomer"
-              @save-sale="saveSale"
               @charge="charge"
               @update-cart="handleUpdateCart"
               @update-summary="handleUpdateSummary"
@@ -127,31 +126,6 @@ export default {
       this.igv = igv;
       this.total = total;
     },
-    /*async saveSale(orderData) {
-      const newOrder = {
-        id: null,
-        "order-title": orderData,
-        "order-took": `${new Date().toLocaleString()}`,
-        products: this.cart.map((item) => ({
-          id: item.id,
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-      };
-
-      try {
-        const result = await accountService.addOrder(this.restaurantName, newOrder);
-        if(result.success){
-          this.$router.push(`/${this.restaurantName}/${this.userRole}/saved-accounts`);
-          alert("Orden guardada exitosamente");
-        } else {
-          alert(`Error guardando la orden: ${result.message}`);
-        }
-      } catch (error){
-        console.error("Error al guardar la orden:", error);
-      }
-    },*/
     charge() {
       // Lógica para procesar el cobro
     }
