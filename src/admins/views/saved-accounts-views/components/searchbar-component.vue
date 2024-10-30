@@ -9,15 +9,15 @@
         @focus="onSearchFocus"
     />
     <ul v-if="filteredAccounts.length && searchQuery" class="dropdown">
-      <li v-for="account in filteredAccounts" :key="account.id" class="account-card">
+      <li v-for="account in filteredAccounts" :key="account.id" class="account-card" @click="$emit('view-account')">
         <div class="card-content">
           <span class="account-name">{{ account.accountName }}</span>
-          <span class="total-account">S/.{{ account.totalAccount }}</span>
-          <span class="account-client">S/.{{ account.client }}</span>
+          <span class="account-client">{{ account.client }}</span>
         </div>
+        <span class="total-account">S/.{{ account.totalAccount }}</span>
       </li>
     </ul>
-    <ul v-else-if="filteredAccounts.length === 0 && searchQuery" class="dropdown">
+    <ul v-else-if="accounts.length === 0 && searchQuery" class="dropdown">
       <li class="account-card">
         <div class="card-content">
           <div class="no-products">
