@@ -3,35 +3,37 @@
     <sidebar-component :restaurant-name="restaurantName" :role="userRole" class="sidebar" />
     <div class="main-content">
       <header-component :restaurant-name="restaurantName" :role="userRole" class="header" />
-      <div class="left-section">
-        <favorite-product-header-component
-            v-if="restaurantName"
-            :is-edit-mode="isEditMode"
-            :restaurant-name="restaurantName"
-            :selected-slot="selectedSlot"
-            :cart="cart"
-            @toggle-edit-mode="toggleEditMode"
-            @add-to-slot="addToSlot"
-            @add-to-cart="addProductToCart"
-        />
-        <product-grid-component
-            :favorite-products="favoriteProducts"
-            :is-edit-mode="isEditMode"
-            @open-product-list="openProductList"
-            @remove-product-from-favorites="removeProductFromFavorites"
-        />
-      </div>
-      <div class="right-section">
-        <cart-summary-component
-            :cart="cart"
-            :subtotal="subtotal"
-            :igv="igv"
-            :total="total"
-            @add-customer="addCustomer"
-            @charge="charge"
-            @update-cart="handleUpdateCart"
-            @update-summary="handleUpdateSummary"
-        />
+      <div class="page-container">
+        <div class="left-section">
+          <favorite-product-header-component
+              v-if="restaurantName"
+              :is-edit-mode="isEditMode"
+              :restaurant-name="restaurantName"
+              :selected-slot="selectedSlot"
+              :cart="cart"
+              @toggle-edit-mode="toggleEditMode"
+              @add-to-slot="addToSlot"
+              @add-to-cart="addProductToCart"
+          />
+          <product-grid-component
+              :favorite-products="favoriteProducts"
+              :is-edit-mode="isEditMode"
+              @open-product-list="openProductList"
+              @remove-product-from-favorites="removeProductFromFavorites"
+          />
+        </div>
+        <div class="right-section">
+          <cart-summary-component
+              :cart="cart"
+              :subtotal="subtotal"
+              :igv="igv"
+              :total="total"
+              @add-customer="addCustomer"
+              @charge="charge"
+              @update-cart="handleUpdateCart"
+              @update-summary="handleUpdateSummary"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -135,13 +137,20 @@ export default {
 .layout {
   display: flex;
   height: 100vh;
-  background-color: #F6F5FA;
 }
 .main-content {
-  margin-left: 200px; /* Desplaza el contenido a la derecha del sidebar */
-  width: calc(100% - 220px); /* Ajusta el ancho para ocupar el resto de la pantalla */
+  margin-left: 255px; /* Desplaza el contenido a la derecha del sidebar */
+  width: calc(100% - 280px); /* Ajusta el ancho para ocupar el resto de la pantalla */
   display: flex;
-  margin-top: 120px
+  flex-direction: column;
+}
+.page-container {
+  margin-top: 70px; /* Desplaza el contenido principal por debajo del header */
+  padding: 20px;
+  background-color: #F6F5FA; /* Fondo blanco para la zona de contenido */
+  height: calc(100vh - 100px); /* Ajusta el alto para evitar desbordamientos */
+  display: flex;
+  gap: 20px;
 }
 
 favorite-product-header-component {

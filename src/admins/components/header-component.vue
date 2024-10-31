@@ -64,9 +64,11 @@ export default {
 
 <style scoped>
 .logo {
+  width: 80px;
   margin: 5px 50px;
 }
 header {
+  height: 70px;
   z-index: 1;
   position: fixed;
   display: flex;
@@ -79,7 +81,7 @@ header {
   align-items: center;
 }
 .profile-button {
-  width: 60px;
+  width: 40px;
   background-color: transparent;
   cursor: pointer;
 }
@@ -88,7 +90,7 @@ header {
   border: none;
   background-color: transparent;
   cursor: pointer;
-  margin: 5px 55px;
+  margin: 10px 55px;
 }
 .dropdown-menu {
   position: absolute;

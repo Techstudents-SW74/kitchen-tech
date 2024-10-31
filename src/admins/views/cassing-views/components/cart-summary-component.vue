@@ -331,4 +331,20 @@ button.charge-button{
 .cart-summary .footer{
   margin-top: auto;
 }
+
+@media (max-width: 1366px) {
+  .cart-summary {
+    flex: 1;
+    padding: 30px 0;
+    border-radius: 5px;
+    display: flex;
+    background-color: #D3D2E5;
+    color: #31304A;
+    flex-direction: column;
+    font-family: "Red-hat-display", sans-serif;
+    max-height: 600px;
+    margin-bottom: 20px;
+  }
+
+}
 </style>

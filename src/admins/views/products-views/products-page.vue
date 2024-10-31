@@ -145,13 +145,13 @@ export default {
   background-color: #F6F5FA;
 }
 .main-content {
-  margin-left: 280px; /* Desplaza el contenido a la derecha del sidebar */
+  margin-left: 255px; /* Desplaza el contenido a la derecha del sidebar */
   width: calc(100% - 280px); /* Ajusta el ancho para ocupar el resto de la pantalla */
   display: flex;
   flex-direction: column;
 }
 .page-container {
-  margin-top: 100px; /* Desplaza el contenido principal por debajo del header */
+  margin-top: 70px; /* Desplaza el contenido principal por debajo del header */
   padding: 20px;
   background-color: #F6F5FA; /* Fondo blanco para la zona de contenido */
   height: calc(100vh - 100px); /* Ajusta el alto para evitar desbordamientos */
@@ -165,7 +165,7 @@ export default {
 }
 .products-header {
   display: flex;
-  max-width: 1000px;
+  max-width: 800px;
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
@@ -179,7 +179,7 @@ export default {
   border: none;
   color: #31304A;
   background-color: #D3D2E5;
-  max-width: 1000px;
+  max-width: 800px;
 }
 .add-button {
   padding: 13px 20px;
@@ -191,9 +191,20 @@ export default {
   font-weight: 800;
   flex-shrink: 0;
 }
+.add-button:hover {
+  background-color: #31304A;
+  color: #F6F5FA;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.add-button:active{
+  background-color: #201E35;
+  color: #F6F5FA;
+}
+
 .product-cards{
   width: 100%;
-  max-width: 1000px;
+  max-width: 800px;
   margin: 20px auto;
 }
 </style>

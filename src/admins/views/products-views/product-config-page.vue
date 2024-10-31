@@ -152,12 +152,12 @@ export default {
   background-color: #F6F5FA;
 }
 .main-content {
-  margin-left: 280px; /* Desplaza el contenido a la derecha del sidebar */
+  margin-left: 255px; /* Desplaza el contenido a la derecha del sidebar */
   width: calc(100% - 280px); /* Ajusta el ancho para ocupar el resto de la pantalla */
   display: flex;
   flex-direction: column;
   font-family: 'Red Hat Display', sans-serif;
-  margin-top: 140px;
+  margin-top: 80px;
 }
 
 .title {
@@ -170,9 +170,9 @@ export default {
 }
 .card {
   background: #D3D2E5;
-  padding: 30px 50px;
+  padding: 40px 50px;
   border-radius: 5px;
-  max-width: 1000px;
+  max-width: 500px;
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
@@ -183,7 +183,7 @@ export default {
   display: flex;
   gap: 20px;
   flex: 1;
-  margin: 20px 0;
+  margin: 10px 0;
 }
 .form-field {
   flex: 1;
@@ -191,15 +191,16 @@ export default {
 .form-field label {
   font-weight: 700;
   color: #31304A;
+  margin: 0;
 }
 .form-field input {
   width: 100%;
-  padding: 12px;
-  font-size: 1rem;
+  padding: 10px;
+  font-size: 0.9rem;
   border: none;
   border-radius: 5px;
   color: #31304A;
-  margin: 10px 0;
+  margin: 5px 0;
   font-weight: 500;
   box-sizing: border-box;
   background: #F6F5FA;
@@ -207,7 +208,7 @@ export default {
 
 button{
   width: 100%;
-  margin: 0 0 16px 0;
+  margin: 20px 0 0 0;
   color: #F6F5FA;
   padding: 24px;
   background: #31304A;
@@ -216,5 +217,8 @@ button{
   border-radius: 5px;
   cursor: pointer;
   border: none;
+}
+button:active{
+  background-color: #201E35;
 }
 </style>

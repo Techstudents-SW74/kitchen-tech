@@ -201,7 +201,7 @@ export default {
 .page-container {
   font-family: 'Red-hat-display', sans-serif;
   font-weight: 100;
-  margin-top: 100px;
+  margin-top: 70px;
   padding: 20px;
   background-color: #F6F5FA;
   height: calc(100vh - 100px);
