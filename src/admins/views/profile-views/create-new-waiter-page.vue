@@ -190,29 +190,13 @@ export default {
 .layout {
   display: flex;
   height: 100vh;
-}
-.sidebar {
-  width: 280px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  background-color: #31304A;
+  background-color: #F6F5FA;
 }
 .main-content {
   margin-left: 280px;
   width: calc(100% - 280px);
   display: flex;
   flex-direction: column;
-}
-.header {
-  position: fixed;
-  top: 0;
-  left: 280px;
-  width: calc(100% - 280px);
-  background-color: #5E5E99;
-  z-index: 1;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .page-container {
   font-family: 'Red-hat-display', sans-serif;
@@ -221,8 +205,8 @@ export default {
   padding: 20px;
   background-color: #F6F5FA;
   height: calc(100vh - 100px);
-  overflow-y: auto;
 }
+
 .content-split {
   display: flex;
   justify-content: space-between;

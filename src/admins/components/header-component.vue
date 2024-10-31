@@ -66,8 +66,8 @@ export default {
 .logo {
   margin: 5px 50px;
 }
-
 header {
+  z-index: 1;
   position: fixed;
   display: flex;
   background-color: #5E5E99;
@@ -78,7 +78,6 @@ header {
   justify-content: space-between;
   align-items: center;
 }
-
 .profile-button {
   width: 60px;
   background-color: transparent;
@@ -91,7 +90,6 @@ header {
   cursor: pointer;
   margin: 5px 55px;
 }
-
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -106,19 +104,16 @@ header {
   color: #31304A;
   padding: 5px;
 }
-
 .dropdown-menu ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .dropdown-menu li {
   padding: 10px;
   cursor: pointer;
   text-align: left;
 }
-
 .dropdown-menu li:hover {
   background-color: #f1f1f1;
 }

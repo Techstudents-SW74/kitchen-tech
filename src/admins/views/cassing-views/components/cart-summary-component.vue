@@ -182,13 +182,15 @@ export default {
 <style scoped>
 .cart-summary {
   flex: 1;
-  padding: 20px 0;
+  padding: 30px 0;
   border-radius: 5px;
   display: flex;
   background-color: #D3D2E5;
   color: #31304A;
   flex-direction: column;
   font-family: "Red-hat-display", sans-serif;
+  max-height: 850px;
+  margin-bottom: 20px;
 }
 .cart-summary button {
   padding: 10px;

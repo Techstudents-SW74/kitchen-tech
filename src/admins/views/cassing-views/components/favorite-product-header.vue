@@ -111,7 +111,7 @@ export default {
   display: flex;
   width: 100%;
   position: relative;
-  max-width: 1000px;
+  max-width: 800px;
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
