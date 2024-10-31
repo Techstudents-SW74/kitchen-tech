@@ -11,7 +11,7 @@
         />
         <TableConfigComponent
             :is-visible="showModal"
-            @add-table="addTable"
+            @save-table="addTable"
             @close-modal="closeModal"
         />
         <div class="tables-container">
@@ -31,7 +31,7 @@
             </template>
           </div>
           <div class="right-section">
-            <button class="button" @click="showModal = true, console.log(showModal)">Add Table</button>
+            <button class="button" @click="showModal = true ">Add Table</button>
             <button class="button">Edit Table</button>
             <button class="button">Delete Table</button>
           </div>
@@ -131,6 +131,7 @@ export default {
         };
         const response = await tablesService.addTable(table);
         if (response) {
+          this.closeModal();
           await this.loadTables();
         } else {
           console.error("Failed to add table");

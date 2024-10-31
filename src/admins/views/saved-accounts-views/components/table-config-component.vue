@@ -12,7 +12,7 @@
             <input
               type="text"
               id="tableNumber"
-              v-model="table.number"
+              v-model="table.tableNumber"
               required
             />
           </div>
@@ -21,7 +21,7 @@
             <input
               type="number"
               id="tableCapacity"
-              v-model="table.capacity"
+              v-model="table.tableCapacity"
               required
             />
           </div>
@@ -34,7 +34,6 @@
 
 <script>
 import userService from "@/public/services/userService";
-import {tablesService} from "@/public/services/tablesService";
 
 export default {
   props:{
@@ -54,24 +53,7 @@ export default {
       isEdit: false,
     };
   },
-  mounted() {
-    this.fetchUserData();
 
-    const userData = JSON.parse(localStorage.getItem('userData')); // Obtener los datos del usuario
-    const restaurantId = localStorage.getItem('restaurantId'); // Obtener el restaurantId
-    if (userData) {
-      this.restaurantName = userData['business-name']; // O lo que sea necesario
-      this.userRole = userData.role;
-    }
-    if (restaurantId) {
-      this.table.restaurantId = restaurantId;
-    }
-
-    if (this.$route.params.tableId) {
-      this.isEdit = true;
-      this.loadTable();
-    }
-  },
   methods: {
     async fetchUserData() {
       try {
@@ -87,33 +69,14 @@ export default {
         console.error("Error fetching restaurant data: ", error);
       }
     },
-    async loadTable() {
-      try {
-        const tableId = this.$route.params.tableId; // Obtén el ID del producto desde los parámetros de la ruta
-        const table = await tablesService.getTableById(tableId); // Llama al endpoint para obtener el producto
-
-        if (table) {
-          this.table = {
-            id: table.id,
-            tableNumber: table.tableNumber,
-            tableCapacity: table.productPrice,
-            tableGuests: table.productImageUrl,
-            tableStatus: 0,
-            restaurantId: table.restaurantId,
-          };
-        }
-      } catch (error) {
-        console.error("Failed to load product", error);
-      }
-    },
     async submitTable() {
-      if (this.tableNumber && this.tableCapacity){
+      if (this.table.tableNumber && this.table.tableCapacity) {
         this.$emit("save-table", {
-          tableNumber: this.tableNumber,
-          tableCapacity: this.tableCapacity,
+          tableNumber: this.table.tableNumber,
+          tableCapacity: this.table.tableCapacity,
         });
       } else {
-        console.log("Error submitTable");
+        console.log("Error submitTable: tableNumber or tableCapacity is missing");
       }
     },
     closeModal(){

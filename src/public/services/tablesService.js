@@ -1,5 +1,4 @@
 import axiosInstance from "@/public/services/axiosConfig";
-import * as error from "express";
 
 const API_URL = '/table';
 
@@ -50,12 +49,13 @@ export const tablesService = {
                     Authorization: `Bearer ${token}`
                 }
             });
+
             if (response.status === 201) {
                 return response.data;
             } else {
                 throw new Error('Error creating table');
             }
-        } catch (errror) {
+        } catch (error) {
             console.error('Error adding table:', error.response ? error.response.data : error.message);
             throw error;
         }
