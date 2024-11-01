@@ -64,7 +64,7 @@ export default {
       isEdit: false,
     };
   },
-  mounted() {
+  beforeMount() {
     this.fetchUserData();
 
     const userData = JSON.parse(localStorage.getItem('userData')); // Obtener los datos del usuario

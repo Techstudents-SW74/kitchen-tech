@@ -48,7 +48,7 @@ export default {
       filteredAccounts: [],
     };
   },
-  mounted() {
+  beforeMount() {
     if(this.restaurantName) {
       this.loadAccounts();
     } else {

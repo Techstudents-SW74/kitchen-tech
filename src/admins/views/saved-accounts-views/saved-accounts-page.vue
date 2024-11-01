@@ -53,7 +53,7 @@ export default {
 
     };
   },
-  mounted() {
+  beforeMount() {
     this.fetchUserData();
 
     const userData = JSON.parse(localStorage.getItem('userData'));
