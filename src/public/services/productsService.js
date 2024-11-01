@@ -57,6 +57,7 @@ export const productsService = {
         }
     },
     async addProduct(product) {
+        console.log("producto:",product);
         try {
             const token = getAuthToken();
             const response = await axiosInstance.post(`${API_URL}`, {

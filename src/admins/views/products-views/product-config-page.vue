@@ -68,7 +68,8 @@ export default {
     this.fetchUserData();
 
     const userData = JSON.parse(localStorage.getItem('userData')); // Obtener los datos del usuario
-    const restaurantId = localStorage.getItem('restaurantId'); // Obtener el restaurantId
+    const restaurantId = userData.restaurantId; // Obtener el restaurantId
+    console.log("id del restaurante:", restaurantId)
     if (userData) {
       this.restaurantName = userData['business-name']; // O lo que sea necesario
       this.userRole = userData.role;
