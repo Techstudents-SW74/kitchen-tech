@@ -140,10 +140,11 @@ export default {
                   productId: item.id,
                   quantity: item.quantity,
                 };
-                await accountService.addAccount(accountProductPayload);
+                await accountService.addAccountProduct(accountProductPayload);
               }
               this.$emit("save-sale", accountPayload);
               this.closeModal();
+              this.$router.push(`/${this.restaurantName}/${this.userRole}/saved-accounts`)
             }
           } else {
             alert("Table not found");
