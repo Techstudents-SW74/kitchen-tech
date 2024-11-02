@@ -9,6 +9,7 @@
       <FavoriteProductCardComponent
           v-if="favoriteProducts[index]"
           :product="favoriteProducts[index]"
+          @product-clicked="addProductToCart" 
           @product-selected="removeProductFromFavorites(index)"
       />
       <div v-else class="empty-slot">
@@ -42,6 +43,9 @@ export default {
       if (!this.favoriteProducts[index]) {
         this.openProductList(index);
       }
+    },
+    addProductToCart(product) {
+      this.$emit('add-to-cart', product);
     },
     addFavoriteToCart(index) {
       if (!this.isEditMode && this.favoriteProducts[index]) {

@@ -1,7 +1,7 @@
 <template>
   <div class="product-card">
-    <div class="product-name">{{ product.name }}</div>
-    <div class="product-price">{{ formatPrice(product.price) }}</div>
+    <div class="product-name">{{ product.productName }}</div>
+    <div class="product-price">{{ formatPrice(product.productPrice) }}</div>
   </div>
 </template>
 
