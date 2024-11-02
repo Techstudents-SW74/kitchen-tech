@@ -1,5 +1,5 @@
 <template>
-  <div class="table-card">
+  <div class="table-card" @click="selectTable">
     <div class="card-header">
       <p class="table-number">Table {{ table.tableNumber }}</p>
       <div class="status-bullet" :class="statusClass" aria-label="Table status"></div>
@@ -39,6 +39,11 @@ export default {
       }
     },
   },
+  methods: {
+    selectTable() {
+      this.$emit('select-table', this.table.id);
+    }
+  }
 };
 </script>
 
@@ -54,7 +59,6 @@ export default {
   max-width: 200px;
   max-height: 95px;
 }
-
 .card-header {
   display: flex;
   flex-direction: row;
@@ -62,11 +66,9 @@ export default {
   font-size: 1.2rem;
   font-weight: 800;
 }
-
 .table-number {
   margin: 10px 0;
 }
-
 .delete-button {
   background: transparent;
   border-radius: 8px;
@@ -76,15 +78,12 @@ export default {
   width: 20px;
   height: 20px;
 }
-
 .delete-button:active {
   background: radial-gradient(circle, #a6a6b1 100%, transparent 50%);
 }
-
 .card-body {
   margin: 5px 0;
 }
-
 .table-stats {
   margin: 0;
   font-size: 0.8rem;

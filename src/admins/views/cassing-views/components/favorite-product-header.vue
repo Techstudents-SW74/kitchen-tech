@@ -72,13 +72,13 @@ export default {
       }
     },
     filterProducts() {
-      try{
+      try {
         const query = this.searchQuery.toLowerCase(); // Convierte la consulta a minúsculas
         this.filteredProducts = this.products.filter((product) =>
             product.productName.toLowerCase().includes(query) // Asegúrate de usar el nombre correcto
         );
-      } catch (error){
-        console.log("There are not products to show")
+      } catch (error) {
+        console.log("There are not products to show");
       }
     },
     addProductToSlot(product){
@@ -87,7 +87,11 @@ export default {
       }
     },
     addProductToCart(product) {
-      this.$emit('add-to-cart', product);
+      const price = {
+        ...product,
+        price: product.productPrice // Asumimos que productPrice contiene el precio
+      };
+      this.$emit('add-to-cart', price);
     },
     toggleEditMode() {
       this.$emit('toggle-edit-mode');

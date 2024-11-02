@@ -3,14 +3,19 @@
     <button class="add-customer" @click="addCustomer">Add Customer</button>
 
     <div class="cart-item" v-for="(item, index) in localCart" :key="item.id">
-      <div class="item-header" @click="toggleItemInputs(index)">
-        <div class="item-info">
-          <span class="item-name">{{ item.productName }}</span>
-          <span class="item-unit">{{ item.quantity }} Un - S/{{ item.productPrice }}</span>
+      <div class="toggle-input">
+        <div class="item-header" @click="toggleItemInputs(index)">
+          <div class="item-info">
+            <span class="item-name">{{ item.productName }}</span>
+            <span class="item-unit">{{ item.quantity }} Un - S/{{ item.price }}</span>
+          </div>
         </div>
-        <button class="remove-button" @click.stop="removeItem(index)">
-          <i>-</i>
-        </button>
+        <img
+            :src="require('/public/assets/images/delete.png')"
+            class="delete-button"
+            @click="removeItem(index)"
+            alt="delete"
+        />
       </div>
       <div v-if="item.showInputs" class="item-body">
         <div class="input-group">
@@ -56,11 +61,29 @@ import {tablesService} from "@/public/services/tablesService";
 export default {
   components: {SaveOrderComponent},
   props: {
-    cart: Array,
-    subtotal: Number,
-    igv: Number,
-    total: Number,
-    restaurantId: Number,
+    cart: {
+      type: Array,
+      default: () => []
+    },
+    subtotal: {
+      type: Number,
+      default: 0
+    },
+    igv: {
+      type: Number,
+      default: 0
+    },
+    total: {
+      type: Number,
+      default: 0
+    },
+    restaurantId: {
+      type: String,
+      required: true
+    }
+  },
+  created() {
+    this.updateCartSummary();
   },
   data() {
     return {
@@ -79,12 +102,10 @@ export default {
     addCustomer() {
       this.$emit('add-customer');
     },
-
     toggleItemInputs(index) {
       // Alternar la visibilidad de los inputs
       this.localCart[index].showInputs = !this.localCart[index].showInputs;
     },
-
     validateQuantity(index) {
       const item = this.localCart[index];
       if (item.quantity === 0 || item.quantity === "") {
@@ -101,7 +122,7 @@ export default {
     },
     updateItemTotal(index) {
       const item = this.localCart[index];
-
+      console.log(this.localCart)
       const total = item.price * item.quantity;
       item.total = total > 0 ? total : 0;
       this.updateCartSummary();
@@ -240,11 +261,16 @@ button.add-customer {
   padding: 10px 20px;
 }
 
+.toggle-input{
+  display: flex;
+  justify-content: space-between;
+}
 .item-header {
   display: flex;
   justify-content: space-between;
   margin-top: 5px;
   margin-bottom: 10px;
+  width: 100%;
 }
 .item-info{
   display: flex;
@@ -256,19 +282,6 @@ button.add-customer {
 }
 .item-unit {
   font-size: 0.8rem;
-}
-.remove-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
-  background-color: #31304A;
-  color: #F6F5FA;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  max-height: 25px;
 }
 
 .item-body {
@@ -305,13 +318,20 @@ label{
   font-size: 0.7rem;
 }
 
-.remove-button {
-  background-color: #31304A;
-  color: #F6F5FA;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 5px;
+.delete-button{
+  background: transparent;
+  border-radius: 8px;
+  padding: 2px;
   cursor: pointer;
+  margin: 10px 0 0 15px;
+  width: 20px;
+  height: 20px;
+}
+.delete-button:hover{
+  background: radial-gradient(circle, #b6b6c3 100%, transparent 50%);
+}
+.delete-button:active{
+  background: radial-gradient(circle, #a6a6b1 100%, transparent 50%);
 }
 .cart-summary .summary {
   display: flex;

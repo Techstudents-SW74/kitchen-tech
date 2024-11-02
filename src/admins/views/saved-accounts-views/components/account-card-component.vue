@@ -1,5 +1,5 @@
 <template>
-  <div class="product-card">
+  <div class="product-card" @click="selectAccount">
     <div class="card-header">
       <p class="account-name">{{ account.accountName }}</p>
       <p class="account-client">{{ account.client === null ? 'Account without client' : account.client }}</p>
@@ -23,6 +23,12 @@ export default {
       type: Object,
       required: true,
     }
+  },
+  methods: {
+    selectAccount() {
+      this.$emit('load-account-products', this.account.id);
+      console.log("Emiting:", this.account);
+    },
   }
 }
 </script>
@@ -36,6 +42,7 @@ export default {
   margin: 10px 10px;
   border-radius: 8px;
   justify-content: space-between;
+  cursor: pointer;
 }
 .account-name{
   font-weight: 1000;

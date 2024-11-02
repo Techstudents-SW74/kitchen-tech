@@ -21,6 +21,7 @@
                 :key="account.id"
                 :account="account"
                 @delete-account="deleteAccount"
+                @load-account-products="loadAccountProducts"
             />
           </template>
         </div>
@@ -86,7 +87,11 @@ export default {
 
       try {
         const accounts = await accountService.getAccountsByRestaurant(restaurantId);
-        this.accounts = accounts;
+        this.accounts = accounts.map(account => ({
+          ...account,
+          tableNumber: account.table?.tableNumber || null,
+          accountName: account.accountName || null,
+        }));
         this.filteredProducts = this.accounts;
       } catch (error) {
         console.error("Failed to load products", error);
@@ -118,7 +123,28 @@ export default {
       } else {
         console.log("Deletion canceled.");
       }
-    }
+    },
+    async loadAccountProducts(accountId) {
+      try {
+        const accountData = await accountService.getAccountById(accountId);
+        console.log("Esta es la informacion de la cuenta:",accountData);
+        const accountProducts = accountData.products;
+
+        this.cart = accountProducts.map(p => ({
+          id: p.productId,
+          productName: p.productName,
+          price: p.price,
+          quantity: p.quantity,
+          showInputs: false
+        }));
+        localStorage.setItem('cartData', JSON.stringify(this.cart))
+
+        this.$router.push(`/${this.restaurantName}/${this.userRole}/casing`)
+
+      } catch (error) {
+        console.error("Error loading products from the account:", error);
+      }
+    },
 
   }
 }

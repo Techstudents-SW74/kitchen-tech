@@ -59,6 +59,12 @@ export default {
     ProductGridComponent,
     CartSummaryComponent
   },
+  props: {
+    cartData: {
+      type: Array,
+      default: () => []
+    },
+  },
   data() {
     return {
       restaurantName: '',
@@ -73,11 +79,15 @@ export default {
       restaurantId: null,
     };
   },
-  beforeMount() {
+  created() {
     this.fetchUserData();
     this.loadProducts();
+    this.loadCart();
   },
   methods: {
+    loadCart() {
+      this.cart = JSON.parse(localStorage.getItem('cartData')) || [];
+    },
     async fetchUserData() {
       try {
         const userData = JSON.parse(localStorage.getItem("userData"));
@@ -95,6 +105,7 @@ export default {
     },
     async loadProducts() {
       const userData = JSON.parse(localStorage.getItem("userData"));
+      console.log(userData)
       const restaurantId = userData?.restaurantId;
       
       if (!restaurantId) {
@@ -134,17 +145,19 @@ export default {
       if (existingItem) {
         existingItem.quantity += 1;
       } else {
-        this.cart.push({ ...product, quantity: 1 });
+        this.cart.push({ ...product, price: product.productPrice, quantity: 1 });
       }
       this.updateCartSummary();
     },
     updateCartSummary() {
+      console.log(this.cart)
       this.subtotal = this.cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
       this.igv = this.subtotal * 0.18; // Calcular IGV (18%)
       this.total = this.subtotal;
     },
     handleUpdateCart(updatedCart) {
       this.cart = updatedCart;
+      console.log("Updated cart recibirdo:", updatedCart)
     },
     handleUpdateSummary({ subtotal, igv, total }) {
       this.subtotal = subtotal;
@@ -153,7 +166,7 @@ export default {
     },
     charge() {
       // Lógica para procesar el cobro
-    }
+    },
   }
 }
 </script>

@@ -45,7 +45,6 @@ export default {
       accountName: "",
       tableNumber: "",
       manualAccountName:"",
-      tableId: null,
     };
   },
   watch: {
@@ -59,13 +58,18 @@ export default {
     handleAccountNameInput(event) {
       const prefix = `Mesa: ${this.tableNumber}`;
       this.manualAccountName = event.target.value.startsWith(prefix)
-      ? event.target.value.slice(prefix.length).trimStart()
+          ? event.target.value.slice(prefix.length).trimStart()
           : event.target.value;
 
       this.accountName = `${prefix} ${this.manualAccountName}`;
     },
     async save() {
       this.$emit("save-sale", this.accountName, this.tableNumber);
+      this.resetFields();
+    },
+    resetFields() {
+      this.accountName = "";
+      this.tableNumber = "";
     },
     closeModal(){
       this.accountName = undefined;

@@ -26,6 +26,7 @@
                   v-for="table in tables"
                   :key="table.id"
                   :table="table"
+                  @select-table="loadTableProducts"
                   @delete-table="deleteTable"
               />
             </template>
