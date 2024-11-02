@@ -137,35 +137,18 @@ export default {
 .layout {
   display: flex;
   height: 100vh;
-
-}
-.sidebar {
-  width: 280px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  background-color: #31304A;
 }
 .main-content {
-  margin-left: 280px; /* Desplaza el contenido a la derecha del sidebar */
+  margin-left: 255px; /* Desplaza el contenido a la derecha del sidebar */
   width: calc(100% - 280px); /* Ajusta el ancho para ocupar el resto de la pantalla */
   display: flex;
   flex-direction: column;
 }
-.header {
-  position: fixed;
-  top: 0;
-  background-color: #5E5E99;
-  z-index: 1;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 .page-container {
-  margin-top: 100px; /* Desplaza el contenido principal por debajo del header */
+  margin-top: 70px; /* Desplaza el contenido principal por debajo del header */
   padding: 20px;
   background-color: #F6F5FA; /* Fondo blanco para la zona de contenido */
   height: calc(100vh - 100px); /* Ajusta el alto para evitar desbordamientos */
-  overflow-y: auto; /* Permite el scroll si el contenido es muy largo */
   display: flex;
   gap: 20px;
 }
@@ -175,7 +158,6 @@ favorite-product-header-component {
   justify-content: space-between; /* Alinea la barra de búsqueda y el botón de edición */
   margin-bottom: 20px; /* Separación entre el header y la cuadrícula de productos */
 }
-
 .left-section {
   flex: 3; /* Hacer que la cuadrícula ocupe más espacio */
 

@@ -7,8 +7,7 @@
         <searchbar-component
             v-if="restaurantName"
             :restaurant-name="restaurantName"
-            @toggle-table-mode="toggleTableMode"
-            @toggle-account-mode="toggleAccountMode"
+            :user-role="userRole"
             />
         <div class="account-cards">
           <template v-if="accounts.length === 0">
@@ -98,14 +97,13 @@ export default {
         try {
           const response = await accountService.deleteAccount(accountId);
           console.log(response)
-          alert(response.message || "Account deleted successfully");
           // Vuelve a cargar los productos después de la eliminación
           await this.loadAccounts();
         } catch (error) {
           console.error('Error during account deletion process:', error);
         }
       } else {
-        alert("Deletion canceled.");
+        console.log("Deletion canceled.");
       }
     },
   }
@@ -116,34 +114,19 @@ export default {
 .layout {
   display: flex;
   height: 100vh;
-}
-.sidebar {
-  width: 280px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  background-color: #31304A;
+  background-color: #F6F5FA;
 }
 .main-content {
-  margin-left: 280px; /* Desplaza el contenido a la derecha del sidebar */
+  margin-left: 255px; /* Desplaza el contenido a la derecha del sidebar */
   width: calc(100% - 280px); /* Ajusta el ancho para ocupar el resto de la pantalla */
   display: flex;
   flex-direction: column;
 }
-.header {
-  position: fixed;
-  top: 0;
-  background-color: #5E5E99;
-  z-index: 1;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 .page-container {
-  margin-top: 100px; /* Desplaza el contenido principal por debajo del header */
+  margin-top: 70px; /* Desplaza el contenido principal por debajo del header */
   padding: 20px;
   background-color: #F6F5FA; /* Fondo blanco para la zona de contenido */
   height: calc(100vh - 100px); /* Ajusta el alto para evitar desbordamientos */
-  overflow-y: auto; /* Permite el scroll si el contenido es muy largo */
   font-family: 'Red Hat Display', sans-serif;
 }
 
