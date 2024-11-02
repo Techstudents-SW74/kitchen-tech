@@ -4,20 +4,21 @@
         v-for="(slot, index) in 30"
         :key="index"
         class="product-slot"
-        @click="isEditMode ? selectFavoriteSlot(index) : addFavoriteToCart(index)"
+        :class="{ 'border-dashed': !favoriteProducts[index] }"
+    @click="isEditMode ? selectFavoriteSlot(index) : addFavoriteToCart(index)"
     >
-      <FavoriteProductCardComponent
-          v-if="favoriteProducts[index]"
-          :product="favoriteProducts[index]"
-          @product-clicked="addProductToCart" 
-          @product-selected="removeProductFromFavorites(index)"
-      />
-      <div v-else class="empty-slot">
-        <button v-if="isEditMode" @click="openProductList(index)">
-          <i>+</i>
-        </button>
-      </div>
+    <FavoriteProductCardComponent
+        v-if="favoriteProducts[index]"
+        :product="favoriteProducts[index]"
+        @product-clicked="addProductToCart"
+        @product-selected="removeProductFromFavorites(index)"
+    />
+    <div v-else class="empty-slot">
+      <button v-if="isEditMode" @click="openProductList(index)">
+        <i>+</i>
+      </button>
     </div>
+  </div>
   </div>
 </template>
 
@@ -68,13 +69,13 @@ export default {
   justify-content: center;
 }
 .product-slot {
-  border: 1px dashed #31304A;
   border-radius: 5px;
   height: 90px;
   max-width: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: border 0.3s ease;
 }
 .empty-slot button {
   background-color: transparent;
@@ -85,6 +86,18 @@ export default {
   align-self: center;
   font-weight: bold;
   cursor: pointer;
+}
 
+.border-dashed {
+  border: 1px dashed #31304A;
+}
+
+@media (max-width: 1366px) {
+  .products-grid {
+    gap: 8px;
+  }
+  .product-slot {
+    height: 70px;
+  }
 }
 </style>
