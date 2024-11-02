@@ -1,7 +1,8 @@
 <template>
   <div class="table-card">
     <div class="card-header">
-      <p class="table-number">Table {{table.tableNumber}}</p>
+      <p class="table-number">Table {{ table.tableNumber }}</p>
+      <div class="status-bullet" :class="statusClass" aria-label="Table status"></div>
       <img
           :src="require('/public/assets/images/delete.png')"
           class="delete-button"
@@ -10,8 +11,8 @@
       />
     </div>
     <div class="card-body">
-      <p class="table-stats">Table capacity: {{table.tableCapacity}}</p>
-      <p class="table-stats">Table guests {{table.tableGuests}}</p>
+      <p class="table-stats">Table capacity: {{ table.tableCapacity }}</p>
+      <p class="table-stats">Table guests: {{ table.tableGuests }}</p>
     </div>
   </div>
 </template>
@@ -22,17 +23,31 @@ export default {
     table: {
       type: Object,
       required: true,
-    }
-  }
-}
+    },
+  },
+  computed: {
+    statusClass() {
+      // Asegurarse de que se manejen solo los estados válidos
+      if (this.table.tableStatus === 'Free') {
+        return 'status-green';
+      } else if (this.table.tableStatus === 'Occupied') {
+        return 'status-red';
+      } else if (this.table.tableStatus === 'ToClean') {
+        return 'status-yellow';
+      } else {
+        return ''; // Clase vacía si el estado es desconocido
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
-.table-card{
+.table-card {
   display: flex;
   flex-direction: column;
-  background-color: #D3D2E5;
-  color: #31304A;
+  background-color: #d3d2e5;
+  color: #31304a;
   padding: 10px 20px;
   margin: 10px 10px;
   border-radius: 8px;
@@ -40,18 +55,19 @@ export default {
   max-height: 95px;
 }
 
-.card-header{
+.card-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   font-size: 1.2rem;
   font-weight: 800;
 }
-.table-number{
+
+.table-number {
   margin: 10px 0;
 }
 
-.delete-button{
+.delete-button {
   background: transparent;
   border-radius: 8px;
   padding: 2px;
@@ -60,17 +76,37 @@ export default {
   width: 20px;
   height: 20px;
 }
-.delete-button:active{
+
+.delete-button:active {
   background: radial-gradient(circle, #a6a6b1 100%, transparent 50%);
 }
 
 .card-body {
   margin: 5px 0;
 }
-.table-stats{
+
+.table-stats {
   margin: 0;
   font-size: 0.8rem;
   font-weight: 800;
   color: #5b5a71;
+}
+
+.status-bullet {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 18px;
+  margin-right: 15px;
+  display: inline-block; /* Asegúrate de que el div se comporta como un bloque */
+}
+.status-green {
+  background-color: #59aa64; /* Cambiado a background-color */
+}
+.status-red {
+  background-color: #d34f4d; /* Cambiado a background-color */
+}
+.status-yellow {
+  background-color: #cfa553; /* Cambiado a background-color */
 }
 </style>

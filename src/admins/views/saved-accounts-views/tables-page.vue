@@ -33,6 +33,17 @@
           <div class="right-section">
             <button class="button" @click="showModal = true ">Add Table</button>
             <button class="button">Edit Table</button>
+            <div class="bullets">
+              <div class="bullet green" aria-label="Table status">
+                <p class="description-bullet">Free</p>
+              </div>
+              <div class="bullet red" aria-label="Table status">
+                <p class="description-bullet">Occupied</p>
+              </div>
+              <div class="bullet yellow" aria-label="Table status">
+                <p class="description-bullet">To Clean</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -99,6 +110,7 @@ export default {
       try {
         const tables = await tablesService.getTablesByRestaurant(restaurantId);
         this.tables = tables;
+        console.log(tables)
       } catch (error) {
         console.error("Failed to load tables");
       }
@@ -185,7 +197,7 @@ export default {
   display: flex;
   flex-direction: column;
   margin: 25px 10px;
-  min-width: 100px;
+  min-width: 120px;
   min-height: 690px;
 }
 .button {
@@ -207,5 +219,35 @@ export default {
 .button:active{
   background-color: #201E35;
   color: #F6F5FA;
+}
+
+.bullets{
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+.description-bullet{
+  margin-left: 15px;
+  margin-top: 0;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.bullet{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  font-size: 0.6rem;
+  margin-top: 15px;
+}
+.red {
+  background-color: #d34f4d;
+}
+.green {
+  background-color: #59aa64;
+}
+.yellow{
+  background-color: #cfa553;
 }
 </style>
