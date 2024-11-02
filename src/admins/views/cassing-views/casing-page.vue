@@ -20,6 +20,8 @@
               :is-edit-mode="isEditMode"
               @open-product-list="openProductList"
               @remove-product-from-favorites="removeProductFromFavorites"
+              @add-to-cart="addProductToCart"
+
           />
         </div>
         <div class="right-section">
@@ -46,6 +48,7 @@ import ProductGridComponent from "@/admins/views/cassing-views/components/produc
 import CartSummaryComponent from "@/admins/views/cassing-views/components/cart-summary-component.vue";
 import FavoriteProductHeaderComponent from "@/admins/views/cassing-views/components/favorite-product-header.vue";
 import userService from "@/public/services/userService";
+import { productsService }  from "@/public/services/productsService"
 
 export default {
   components: {
@@ -70,6 +73,7 @@ export default {
   },
   mounted() {
     this.fetchUserData();
+    this.loadProducts();
   },
   methods: {
     async fetchUserData() {
@@ -84,6 +88,24 @@ export default {
         }
       } catch (error) {
         console.error("Error fetching restaurant data: ", error);
+      }
+    },
+    async loadProducts() {
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const restaurantId = userData?.restaurantId;
+      
+      if (!restaurantId) {
+        console.error("No restaurant ID found in userData");
+        return; // Exit if there's no restaurantId
+      }
+
+      try {
+        const products = await productsService.getProductsByRestaurant(restaurantId);
+        this.favoriteProducts = products;
+        console.log(this.favoriteProducts);
+
+      } catch (error) {
+        console.error("Failed to load products", error);
       }
     },
 
