@@ -59,5 +59,27 @@ export const tablesService = {
             console.error('Error adding table:', error.response ? error.response.data : error.message);
             throw error;
         }
-    }
+    },
+
+    async updateTable(table) {
+        try {
+            const token = getAuthToken();
+            const response = await axiosInstance.put(`${API_URL}/${table.id}`, {
+                id: table.id,
+                tableNumber: table.tableNumber,
+                tableCapacity: table.tableCapacity,
+                tableGuests: table.tableGuests,
+                tableStatus: table.tableStatus,
+                restaurantId: table.restaurantId,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Incluye el token en el encabezado
+                }
+            });
+            return response.data; // Retorna los datos de la respuesta
+        } catch (error) {
+            console.error('Error updating table:', error.response ? error.response.data : error.message);
+            throw error; // Lanza el error para manejarlo en la llamada
+        }
+    },
 }

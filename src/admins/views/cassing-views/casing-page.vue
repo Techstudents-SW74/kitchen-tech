@@ -28,6 +28,7 @@
               :subtotal="subtotal"
               :igv="igv"
               :total="total"
+              :restaurant-id="restaurantId"
               @add-customer="addCustomer"
               @charge="charge"
               @update-cart="handleUpdateCart"
@@ -66,6 +67,7 @@ export default {
       isEditMode: false,
       selectedSlot: null,
       favoriteProducts: Array(30).fill(null),
+      restaurantId: null,
     };
   },
   beforeMount() {
@@ -81,6 +83,7 @@ export default {
           const restaurantData = await userService.getRestaurantById(restaurantId);
           this.restaurantName = restaurantData.name;
           this.userRole = userData.role;
+          this.restaurantId = restaurantId;
         }
       } catch (error) {
         console.error("Error fetching restaurant data: ", error);
