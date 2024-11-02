@@ -71,9 +71,10 @@ export default {
 <style scoped>
 .logo {
   margin: 5px 50px;
+  width: 80px;
 }
-
 header {
+  z-index: 1;
   position: fixed;
   display: flex;
   background-color: #5E5E99;
@@ -83,21 +84,19 @@ header {
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  max-height: 70px;
 }
-
 .profile-button {
-  width: 60px;
+  width: 40px;
   background-color: transparent;
   cursor: pointer;
 }
-
 .dropdown {
   border: none;
   background-color: transparent;
   cursor: pointer;
   margin: 5px 55px;
 }
-
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -112,19 +111,16 @@ header {
   color: #31304A;
   padding: 5px;
 }
-
 .dropdown-menu ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .dropdown-menu li {
   padding: 10px;
   cursor: pointer;
   text-align: left;
 }
-
 .dropdown-menu li:hover {
   background-color: #f1f1f1;
 }

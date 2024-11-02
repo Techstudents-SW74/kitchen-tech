@@ -7,6 +7,21 @@ const getAuthToken = () => {
 };
 
 export const accountService = {
+    async getAccountById(accountId) {
+        try {
+            const token = getAuthToken();
+            const response = await axiosInstance.get(`${API_URL}/${accountId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching account", error.response ? error.response.data : error.message);
+            throw error;
+        }
+    },
     async getAccountsByRestaurant(restaurantId) {
         try {
             const token = getAuthToken();

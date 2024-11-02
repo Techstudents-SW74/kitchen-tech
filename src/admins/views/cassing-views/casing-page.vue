@@ -20,6 +20,8 @@
               :is-edit-mode="isEditMode"
               @open-product-list="openProductList"
               @remove-product-from-favorites="removeProductFromFavorites"
+              @add-to-cart="addProductToCart"
+
           />
         </div>
         <div class="right-section">
@@ -28,6 +30,7 @@
               :subtotal="subtotal"
               :igv="igv"
               :total="total"
+              :restaurant-id="restaurantId"
               @add-customer="addCustomer"
               @charge="charge"
               @update-cart="handleUpdateCart"
@@ -46,6 +49,7 @@ import ProductGridComponent from "@/admins/views/cassing-views/components/produc
 import CartSummaryComponent from "@/admins/views/cassing-views/components/cart-summary-component.vue";
 import FavoriteProductHeaderComponent from "@/admins/views/cassing-views/components/favorite-product-header.vue";
 import userService from "@/public/services/userService";
+import { productsService }  from "@/public/services/productsService"
 
 export default {
   components: {
@@ -66,10 +70,12 @@ export default {
       isEditMode: false,
       selectedSlot: null,
       favoriteProducts: Array(30).fill(null),
+      restaurantId: null,
     };
   },
   beforeMount() {
     this.fetchUserData();
+    this.loadProducts();
   },
   methods: {
     async fetchUserData() {
@@ -81,9 +87,28 @@ export default {
           const restaurantData = await userService.getRestaurantById(restaurantId);
           this.restaurantName = restaurantData.name;
           this.userRole = userData.role;
+          this.restaurantId = restaurantId;
         }
       } catch (error) {
         console.error("Error fetching restaurant data: ", error);
+      }
+    },
+    async loadProducts() {
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const restaurantId = userData?.restaurantId;
+      
+      if (!restaurantId) {
+        console.error("No restaurant ID found in userData");
+        return; // Exit if there's no restaurantId
+      }
+
+      try {
+        const products = await productsService.getProductsByRestaurant(restaurantId);
+        this.favoriteProducts = products;
+        console.log(this.favoriteProducts);
+
+      } catch (error) {
+        console.error("Failed to load products", error);
       }
     },
 
@@ -137,35 +162,19 @@ export default {
 .layout {
   display: flex;
   height: 100vh;
-
-}
-.sidebar {
-  width: 280px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  background-color: #31304A;
+  background-color: #F6F5FA
 }
 .main-content {
-  margin-left: 280px; /* Desplaza el contenido a la derecha del sidebar */
+  margin-left: 255px; /* Desplaza el contenido a la derecha del sidebar */
   width: calc(100% - 280px); /* Ajusta el ancho para ocupar el resto de la pantalla */
   display: flex;
   flex-direction: column;
 }
-.header {
-  position: fixed;
-  top: 0;
-  background-color: #5E5E99;
-  z-index: 1;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 .page-container {
-  margin-top: 100px; /* Desplaza el contenido principal por debajo del header */
+  margin-top: 70px; /* Desplaza el contenido principal por debajo del header */
   padding: 20px;
   background-color: #F6F5FA; /* Fondo blanco para la zona de contenido */
   height: calc(100vh - 100px); /* Ajusta el alto para evitar desbordamientos */
-  overflow-y: auto; /* Permite el scroll si el contenido es muy largo */
   display: flex;
   gap: 20px;
 }

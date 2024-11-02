@@ -13,6 +13,7 @@
                 type="text"
                 id="accountName"
                 v-model="accountName"
+                @input="handleAccountNameInput"
             />
           </div>
           <div class="form-group table-number">
@@ -31,6 +32,7 @@
 </template>
 
 <script>
+
 export default {
   props: {
     isVisible: {
@@ -42,18 +44,28 @@ export default {
     return {
       accountName: "",
       tableNumber: "",
+      manualAccountName:"",
+      tableId: null,
     };
   },
-  methods: {
-    save() {
-      if (this.accountName || this.tableNumber) {
-        this.$emit("save-sale", {
-          accountName: this.accountName,
-          tableNumber: this.tableNumber,
-        });
-      } else {
-        alert("Please, complete one input at least")
+  watch: {
+    tableNumber(newVal){
+      if(!this.manualAccountName){
+        this.accountName = `Mesa: ${newVal}`;
       }
+    },
+  },
+  methods: {
+    handleAccountNameInput(event) {
+      const prefix = `Mesa: ${this.tableNumber}`;
+      this.manualAccountName = event.target.value.startsWith(prefix)
+      ? event.target.value.slice(prefix.length).trimStart()
+          : event.target.value;
+
+      this.accountName = `${prefix} ${this.manualAccountName}`;
+    },
+    async save() {
+      this.$emit("save-sale", this.accountName, this.tableNumber);
     },
     closeModal(){
       this.accountName = undefined;
