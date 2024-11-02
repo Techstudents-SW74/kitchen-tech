@@ -7,50 +7,79 @@
       </div>
 
       <form @submit.prevent="onSubmit" class="signup-form">
-        <!-- Row para businessName-->
+        <!-- Username Field -->
         <div class="form-row">
           <div class="form-field">
-            <label for="businessName">Business Name</label>
-            <input type="text" id="businessName" v-model="businessName" placeholder="Ex. La Bisteca" />
-            <span v-if="!businessName && businessNameTouched">Business Name is required</span>
+            <label for="username">Username</label>
+            <input type="text" id="username" v-model="username" @blur="touched.username = true" placeholder="Ex. adminLaRomana" required />
+            <span v-if="touched.username && usernameError" class="error">{{ usernameError }}</span>
           </div>
         </div>
 
-        <!-- Row para email y phone -->
+        <!-- Name Field -->
+        <div class="form-row">
+          <div class="form-field">
+            <label for="name">Restaurant Name</label>
+            <input type="text" id="name" v-model="name" @blur="touched.name = true" placeholder="Ex. La Romana" required />
+            <span v-if="touched.name && !name" class="error">This field is mandatory</span>
+          </div>
+        </div>
+
+        <!-- Email and Phone Fields -->
         <div class="form-row">
           <div class="form-field">
             <label for="email">Email</label>
-            <input type="email" id="email" v-model="email" placeholder="Ex. admin@labisteca.com" />
-            <span v-if="!email && emailTouched">Email is required</span>
-            <span v-if="email && !isValidEmail">Please enter a valid Email</span>
+            <input type="email" id="email" v-model="email" @blur="touched.email = true" placeholder="Ex. email@example.com" required />
+            <span v-if="touched.email && emailError" class="error">{{ emailError }}</span>
           </div>
-
           <div class="form-field">
             <label for="phone">Phone</label>
-            <input type="tel" id="phone" v-model="phone" placeholder="Ex. 987654321" />
-            <span v-if="!phone && phoneTouched">Phone number is required</span>
-            <span v-if="phone && !isValidPhone">Please enter a valid phone number</span>
+            <input type="tel" id="phone" v-model="phone" @blur="touched.phone = true" placeholder="Ex. 904688149" required />
+            <span v-if="touched.phone && phoneError" class="error">{{ phoneError }}</span>
           </div>
         </div>
 
-        <!-- Row para password y confirm password -->
+        <!-- Password and Confirm Password Fields -->
         <div class="form-row">
           <div class="form-field">
             <label for="password">Password</label>
-            <input type="password" id="password" v-model="password" placeholder="Create your password" />
-            <span v-if="!password && passwordTouched">Password is required</span>
-            <span v-if="password.length > 0 && password.length < 6">Password must have at least 6 characters</span>
+            <div class="password-wrapper">
+              <input :type="passwordVisible ? 'text' : 'password'"
+                     id="password"
+                     v-model="password"
+                     @blur="touched.password = true"
+                     placeholder="Create your password"
+                     required />
+              <img
+                  :src="passwordVisible ? require('/public/assets/images/show.png') : require('/public/assets/images/hide.png')"
+                  @click="togglePasswordVisibility"
+                  class="password-toggle"
+                  alt="toggle visibility"
+              />
+            </div>
+            <span v-if="touched.password && passwordError" class="error">{{ passwordError }}</span>
           </div>
 
           <div class="form-field">
             <label for="confirmPassword">Confirm Password</label>
-            <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Confirm your password" />
-            <span v-if="!confirmPassword && confirmPasswordTouched">Please enter your password again</span>
-            <span v-if="confirmPassword && !passwordsMatch">Passwords don't match</span>
+            <div class="password-wrapper">
+              <input :type="confirmPasswordVisible ? 'text' : 'password'"
+                     id="confirmPassword"
+                     v-model="confirmPassword"
+                     @blur="touched.confirmPassword = true"
+                     placeholder="Confirm your password"
+                     required />
+              <img
+                  :src="confirmPasswordVisible ? require('/public/assets/images/show.png') : require('/public/assets/images/hide.png')"
+                  @click="toggleConfirmPasswordVisibility"
+                  class="password-toggle"
+                  alt="toggle visibility"
+              />
+            </div>
+            <span v-if="touched.confirmPassword && confirmPasswordError" class="error">{{ confirmPasswordError }}</span>
           </div>
         </div>
 
-        <!-- Botón de registro -->
         <button class="signup-button" type="submit">Sign Up</button>
 
         <div class="login-redirect">
@@ -61,78 +90,111 @@
   </div>
 </template>
 
-
 <script>
-import authService from "@/public/services/authService"
+import authService from "@/public/services/authService";
 
 export default {
   data() {
     return {
-      businessName: '',
-      businessNameTouched: false,
+      username: '',
+      name: '',
       email: '',
-      emailTouched: false,
       phone: '',
-      phoneTouched: false,
       password: '',
-      passwordTouched: false,
       confirmPassword: '',
-      confirmPasswordTouched: false,
+      city: '',
+      district: '',
+      passwordVisible: false,
+      confirmPasswordVisible: false,
+      touched: {
+        username: false,
+        name: false,
+        email: false,
+        phone: false,
+        password: false,
+        confirmPassword: false,
+        city: false,
+        district: false,
+      }
     };
   },
   computed: {
-    isValidEmail() {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailPattern.test(this.email);
+    usernameError() {
+      if (!this.username) return "This field is mandatory";
+      if (/\s/.test(this.username)) return "Username must not have blank spaces";
+      if (!/^[a-zA-Z0-9]+$/.test(this.username)) return "The username must not have special characters";
+      return null;
     },
-    isValidPhone() {
-      const phonePattern = /^\d{9}$/;
-      return phonePattern.test(this.phone);
+    emailError() {
+      if (!this.email) return "This field is mandatory";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)) return "Email not valid";
+      return null;
     },
-    passwordsMatch() {
-      return this.password === this.confirmPassword;
+    phoneError() {
+      if (!this.phone) return "This field is mandatory";
+      if (!/^\d{9}$/.test(this.phone)) return "Phone number not valid";
+      return null;
     },
-    isValidForm() {
-      const valid = this.businessName && this.email && this.isValidEmail && this.isValidPhone && this.passwordsMatch && this.password.length >= 6;
-      return valid;
+    passwordError() {
+      if (!this.password) return "This field is mandatory";
+      if (this.password.length < 6) return "Password must have 6 characters at least";
+      if (!/[a-z]/.test(this.password)) return "Must contain 1 lowercase at least";
+      if (!/[A-Z]/.test(this.password)) return "Must contain 1 uppercase at least";
+      if (!/[!@#$%^&*]/.test(this.password)) return "Must contain 1 special character at least";
+      return null;
+    },
+    confirmPasswordError() {
+      if (!this.confirmPassword) return "This field is mandatory";
+      if (this.confirmPassword !== this.password) return "Passwords don't match";
+      return null;
     }
   },
   methods: {
-    async onSubmit() {
-      this.businessNameTouched = true;
-      this.emailTouched = true;
-      this.phoneTouched = true;
-      this.passwordTouched = true;
-      this.confirmPasswordTouched = true;
-
-      if (this.isValidForm) {
-        const adminData = {
-          businessName: this.businessName,
-          email: this.email,
-          phone: this.phone,
-          password: this.password,
-        };
-
-        try {
-          const response = await authService.signup(adminData);
-
-          if (response.success) {
-            this.$router.push('/login');
-          } else {
-            alert(response.message);
-          }
-        } catch (error) {
-          console.error('Error during signup process:', error); // Log de error
-          alert('An error occurred: ' + error.message);
-        }
-      } else {
-        console.warn('Form is invalid, submission blocked.'); // Log de advertencia
-      }
+    togglePasswordVisibility() {
+      this.passwordVisible = !this.passwordVisible;
     },
+    toggleConfirmPasswordVisibility() {
+      this.confirmPasswordVisible = !this.confirmPasswordVisible;
+    },
+    async onSubmit() {
+      if (
+          this.usernameError ||
+          this.emailError ||
+          this.phoneError ||
+          this.passwordError ||
+          this.confirmPasswordError
+      ) {
+        alert("There are errors in the form. Please check it before continue");
+        return;
+      }
+
+      const userData = {
+        username: this.username,
+        name: this.name,
+        email: this.email.toLowerCase(),
+        password: this.password,
+        phone: this.phone,
+        city: this.city,
+        district: this.district,
+        image: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png",
+        role: 0,
+      };
+
+      try {
+        const response = await authService.signupRestaurant(userData);
+        if (response.success) {
+          this.$router.push('/login');
+        } else {
+          alert(response.message);
+        }
+      } catch (error) {
+        console.error('Error during signup process:', error);
+        alert('An error occurred: ' + error.message);
+      }
+    }
   }
 };
 </script>
-
 
 <style scoped>
 .card-container {
@@ -196,14 +258,6 @@ span {
   margin-left: 5px;
 }
 
-.dropdown-form-field {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-  width: 100%;
-  font-weight: 700;
-  color: #31304A;
-}
 .dropdown-form-field select {
   width: 100%;
   padding: 12px;
@@ -241,6 +295,27 @@ span {
 }
 .login-redirect a {
   color: #31304A;
+}
+
+.password-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  flex: 1;
+}
+
+.password-wrapper button {
+  background: none;
+  border: none;
+  color: #31304A;
+  cursor: pointer;
+  margin-left: 5px;
+}
+.password-toggle{
+  width: 25px;
+  margin-left: 5px;
 }
 </style>
 

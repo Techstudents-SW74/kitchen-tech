@@ -6,30 +6,37 @@
         <p class="card-title">Sign In</p>
       </div>
 
-      <!-- Formulario para el email -->
+      <!-- Formulario para el username -->
       <form @submit.prevent="onSubmit">
-        <!-- Input para el email -->
+        <!-- Input para el username -->
         <div class="form-field">
-          <label for="email">Email</label>
+          <label for="username">Username</label>
           <input
-              type="email"
-              id="email"
-              v-model="email"
-              placeholder="Ex. fcastro@gmail.com"
+              type="text"
+              id="username"
+              v-model="username"
+              placeholder="Ex. fcastro"
           />
-          <span v-if="!email && emailTouched">Please enter your email</span>
-          <span v-if="email && !isValidEmail">Please enter a valid email address</span>
+          <span v-if="!username && usernameTouched">Please enter your username</span>
         </div>
 
         <!-- Input para la contraseña -->
         <div class="form-field">
           <label for="password">Password</label>
-          <input
-              type="password"
-              id="password"
-              v-model="password"
-              placeholder="Enter your password"
-          />
+          <div class="password-wrapper">
+            <input
+                :type="passwordVisible ? 'text' : 'password'"
+                id="password"
+                v-model="password"
+                placeholder="Enter your password"
+            />
+            <img
+                :src="passwordVisible ? require('/public/assets/images/show.png') : require('/public/assets/images/hide.png')"
+                @click="togglePasswordVisibility"
+                class="password-toggle"
+                alt="toggle visibility"
+            />
+          </div>
           <span v-if="!password && passwordTouched">Please enter a password</span>
           <span v-if="password.length > 0 && password.length < 6">Your password must have at least 6 characters</span>
         </div>
@@ -50,41 +57,46 @@ import authService from "@/public/services/authService";
 export default {
   data() {
     return {
-      email: '',
-      emailTouched: false,
+      username: '',
+      usernameTouched: false,
       password: '',
       passwordTouched: false,
+      passwordVisible: false,
       loginError: null
     };
   },
-  computed: {
-    isValidEmail() {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailPattern.test(this.email);
-    }
-  },
   methods: {
+    togglePasswordVisibility() {
+      this.passwordVisible = !this.passwordVisible;
+    },
     async onSubmit() {
-      this.emailTouched = true;
+      this.usernameTouched = true;
       this.passwordTouched = true;
 
-      if (this.email && this.isValidEmail && this.password.length >= 6) {
+      if (this.username && this.password.length >= 6) {
         try {
-          const response = await authService.login(this.email, this.password);
+          const response = await authService.login(this.username, this.password);
 
-          if(response.success) {
-            const restaurantName = response.role === 'admin'
-                ? response.user['business-name']
-                : response.restaurantId;
+          if (response.success) {
+            localStorage.setItem('token', response.token);
 
-            const basePath = `/${restaurantName}/${response.role}`;
-            localStorage.setItem('userData', JSON.stringify({ 'business-name': restaurantName, role: response.role }));
+            // Guarda todos los datos necesarios en userData
+            const userData = {
+              id: response.id,
+              username: this.username,
+              restaurantId: response.restaurantId,
+              role: response.role,
+            };
+            localStorage.setItem('userData', JSON.stringify(userData));
+
+            // Redirige a la vista adecuada después del login
+            const basePath = `/${this.username}/${response.role}`;
             this.$router.push(`${basePath}/casing`);
           } else {
             this.loginError = response.message;
           }
-        }catch (error) {
-          this.loginError = 'An error ocurred. Please try again';
+        } catch (error) {
+          this.loginError = 'An error occurred. Please try again';
         }
       }
     }
@@ -177,5 +189,25 @@ export default {
   color: #b14343;
   font-size: 0.8rem;
   margin-left: 5px;
+}
+.password-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  flex: 1;
+}
+
+.password-wrapper button {
+  background: none;
+  border: none;
+  color: #31304A;
+  cursor: pointer;
+  margin-left: 5px;
+}
+.password-toggle{
+  width: 25px;
+  margin: 0 5px;
 }
 </style>
