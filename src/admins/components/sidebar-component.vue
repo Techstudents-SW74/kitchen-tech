@@ -70,8 +70,9 @@ export default {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 280px;
+  width: 220px;
   padding-top: 40px;
+  padding-right: 10px;
   background-color: #31304A;
   color: #F6F5FA;
   overflow-y: auto;

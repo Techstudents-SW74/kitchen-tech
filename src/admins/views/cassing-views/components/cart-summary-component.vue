@@ -28,6 +28,7 @@
       <button class="save-sale" @click="showModal = true">Save Sale</button>
       <save-order-component
           :is-visible="showModal"
+          :restaurant-id="restaurantId"
           @save-sale="saveOrder"
           @close-modal="closeModal"
       />
@@ -50,6 +51,7 @@
 <script>
 import SaveOrderComponent from "@/admins/views/cassing-views/components/save-order-component.vue";
 import {accountService} from "@/public/services/accountsService";
+import {tablesService} from "@/public/services/tablesService";
 
 export default {
   components: {SaveOrderComponent},
@@ -57,7 +59,8 @@ export default {
     cart: Array,
     subtotal: Number,
     igv: Number,
-    total: Number
+    total: Number,
+    restaurantId: Number,
   },
   data() {
     return {
@@ -108,33 +111,49 @@ export default {
       this.updateCartSummary();
       this.$emit('update-cart', this.localCart); // Enviar al padre la actualización del carrito
     },
+    async saveOrder(accountName, tableNumber) {
+      if (accountName || tableNumber) {
+        try {
+          const tables = await tablesService.getTablesByRestaurant(this.restaurantId);
+          const table = tables.find(t => String(t.tableNumber) === String(tableNumber));
 
-    async saveOrder(orderData) {
-      try {
-        const userData = JSON.parse(localStorage.getItem("userData"));
-        const restaurantId = userData?.restaurantId;
+          if (table) {
+            this.tableId = table.id;
+            const accountPayload = {
+              accountName: this.accountName || `Mesa: ${tableNumber}`,
+              table: { id: table.id },
+              restaurantId: this.restaurantId,
+              state: 0,
+              totalAccount: this.localTotal.toFixed(2),
+              products: [],
+            };
 
-        const account = {
-          accountName: orderData.accountName,
-          restaurantId: restaurantId, // Obtenemos el ID del restaurante del usuario
-          state: 0,
-          totalAccount: 0
-        };
-        const response = await accountService.addAccount(account);
-        const accountId = response.id;
+            const createdAccount = await accountService.addAccount(accountPayload);
 
-        for (const item of this.localCart) {
-          const accountProduct = {
-            accountId,
-            productId: item.id,
-            quantity: item.quantity
-          };
-          await accountProduct.addAccountProduct(accountProduct);
+            if(createdAccount && createdAccount.id) {
+              table.tableStatus = 1;
+              await tablesService.updateTable(table);
+
+              for(const item of this.localCart) {
+                const accountProductPayload = {
+                  accountId: createdAccount.id,
+                  productId: item.id,
+                  quantity: item.quantity,
+                };
+                await accountService.addAccountProduct(accountProductPayload);
+              }
+              this.$emit("save-sale", accountPayload);
+              this.closeModal();
+              this.$router.push(`/${this.restaurantName}/${this.userRole}/saved-accounts`)
+            }
+          } else {
+            alert("Table not found");
+          }
+        } catch (error) {
+          console.error("Error saving account or updating table status:", error);
         }
-        alert("Account Saved Successfully!");
-        this.closeModal();
-      } catch (error) {
-        console.error("Error Saving the Account:", error);
+      } else {
+        alert("Please, complete one input at least");
       }
     },
     closeModal(){
