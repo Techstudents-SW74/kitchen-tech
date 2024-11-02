@@ -156,7 +156,7 @@ export default {
       return null;
     }
   },
-  mounted() {
+  beforeMount() {
     this.fetchUserData();
   },
   methods: {

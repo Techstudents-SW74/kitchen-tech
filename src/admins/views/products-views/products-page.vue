@@ -61,7 +61,7 @@ export default {
       filteredProducts: [],
     };
   },
-  mounted() {
+  beforeMount() {
     this.fetchUserData();
 
     const userData = JSON.parse(localStorage.getItem('userData'));

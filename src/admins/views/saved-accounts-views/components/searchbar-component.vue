@@ -51,9 +51,8 @@ export default {
       activeMode: 'accounts',
     };
   },
-  mounted() {
+  beforeMount() {
     this.activeMode = this.$route.path.includes("tables") ? 'tables' : 'accounts';
-
     if(this.restaurantName) {
       this.loadAccounts();
     } else {

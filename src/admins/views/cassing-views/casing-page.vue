@@ -68,7 +68,7 @@ export default {
       favoriteProducts: Array(30).fill(null),
     };
   },
-  mounted() {
+  beforeMount() {
     this.fetchUserData();
   },
   methods: {

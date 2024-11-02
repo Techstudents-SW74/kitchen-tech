@@ -110,4 +110,18 @@ const router = createRouter({
     routes
 })
 
+// Guard de navegación para verificar el token
+router.beforeEach((to, from, next) => {
+    const publicPages = ['/login', '/signup'];
+    const authRequired = !publicPages.includes(to.path);
+    const token = localStorage.getItem('token');
+  
+    if (authRequired && !token) {
+      // Si no tiene token y la ruta requiere autenticación, redirige al login
+      return next('/login');
+    }
+  
+    next();
+  });
+
 export default router

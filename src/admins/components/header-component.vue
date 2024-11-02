@@ -51,7 +51,13 @@ export default {
     },
     logout() {
       if(confirm("Are you sure you want to logout?")) {
+        localStorage.removeItem('token');    // Eliminar el token y los datos del usuario del localStorage
+
+        localStorage.removeItem('userData');
+        
         this.$router.push('/login');
+        // Eliminar el token y los datos del usuario del localStorage
+    
         console.log('Logout');
       } else {
         console.log('Logout canceled');

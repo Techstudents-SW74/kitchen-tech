@@ -47,7 +47,7 @@ export default {
       filteredProducts: [], // Productos filtrados por la búsqueda
     };
   },
-  mounted() {
+  beforeMount() {
     if(this.restaurantName) {
       this.loadProducts();
     } else {

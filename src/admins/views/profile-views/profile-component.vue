@@ -73,7 +73,7 @@ export default {
       }
     };
   },
-  mounted() {
+  beforeMount() {
     this.fetchUserData();
   },
   methods: {

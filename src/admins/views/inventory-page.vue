@@ -26,7 +26,7 @@ export default {
       userRole: '',
     };
   },
-  mounted() {
+  beforeMount() {
     this.fetchUserData();
   },
   methods: {

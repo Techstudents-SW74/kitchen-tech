@@ -66,7 +66,7 @@ export default {
       showModal: false,
     };
   },
-  mounted() {
+  beforeMount() {
     this.fetchUserData();
 
     const userData = JSON.parse(localStorage.getItem('userData'));
