@@ -11,7 +11,8 @@
           <form @submit.prevent="submitProduct">
             <div class="form-field">
               <label for="name">Product Name</label>
-              <input type="text" v-model="product.productName" required />
+              <input type="text" v-model="product.productName" required @input="checkProductName" />
+              <span v-if="errorMessage" class="error-message">{{ errorMessage }}</span> <!-- Mensaje de error -->
             </div>
 
             <div class="form-row">
@@ -31,14 +32,13 @@
               <input type="text" v-model="product.productImageUrl" />
             </div>
 
-            <button type="submit">{{ isEdit ? 'Save Changes' : 'Add Product' }}</button>
+            <button type="submit" :disabled="errorMessage">{{ isEdit ? 'Save Changes' : 'Add Product' }}</button> <!-- Deshabilitar el botón si hay un error -->
           </form>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 
 <script>
 import HeaderComponent from "@/admins/components/header-component.vue";
@@ -62,6 +62,7 @@ export default {
         restaurantId: null,
       },
       isEdit: false,
+      errorMessage: '', // Estado para el mensaje de error
     };
   },
   beforeMount() {
@@ -119,12 +120,17 @@ export default {
       }
     },
 
+    async checkProductName() {
+      this.errorMessage = ''; // Resetear mensaje de error
+      const productNameExists = await this.checkProductNameExists(this.product.productName, this.product.restaurantId);
+      if (productNameExists && !this.isEdit) {
+        this.errorMessage = 'A product with this name already exists in this restaurant. Please choose a different name.';
+      }
+    },
+
     async checkProductNameExists(productName, restaurantId) {
       try {
-        // Llama a `getProductsByRestaurant` para obtener los productos del restaurante
         const products = await productsService.getProductsByRestaurant(restaurantId);
-
-        // Verifica si algún producto tiene el mismo nombre (ignora mayúsculas)
         return products.some(product => product.productName.toLowerCase() === productName.toLowerCase());
       } catch (error) {
         console.error('Error checking product name:', error);
@@ -145,8 +151,8 @@ export default {
 
       try {
         const response = this.isEdit
-          ? await productsService.updateProduct(this.product)
-          : await productsService.addProduct(this.product);
+            ? await productsService.updateProduct(this.product)
+            : await productsService.addProduct(this.product);
 
         if (response) {
           alert(`Product ${this.isEdit ? 'updated' : 'created'} successfully.`);
@@ -164,9 +170,6 @@ export default {
   }
 }
 </script>
-
-
-
 
 <style scoped>
 /* Estilos que adaptan la vista a la region especifica de la pantalla */
@@ -245,5 +248,10 @@ button{
   border-radius: 5px;
   cursor: pointer;
   border: none;
+}
+.error-message {
+  color: #b14343;
+  font-size: 0.8rem;
+  margin-top: 5px;
 }
 </style>
