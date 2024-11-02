@@ -7,6 +7,21 @@ const getAuthToken = () => {
 }
 
 export const tablesService = {
+    async getTableById(tableId) {
+        try {
+            const token = getAuthToken();
+            const response = await axiosInstance.get(`${API_URL}/${tableId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching table", error.response ? error.response.data : error.message);
+            throw error;
+        }
+
+    },
     async getTablesByRestaurant(restaurantId) {
         try {
             const token = getAuthToken();

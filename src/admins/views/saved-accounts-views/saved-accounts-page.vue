@@ -36,6 +36,7 @@ import userService from "@/public/services/userService";
 import SearchbarComponent from "@/admins/views/saved-accounts-views/components/searchbar-component.vue";
 import AccountCardComponent from "@/admins/views/saved-accounts-views/components/account-card-component.vue";
 import {accountService} from "@/public/services/accountsService";
+import {tablesService} from "@/public/services/tablesService";
 
 export default {
   components: {
@@ -92,11 +93,23 @@ export default {
       }
     },
     async deleteAccount(accountId) {
-      console.log(accountId)
       if (confirm("Are you sure you want to remove this account?")) {
         try {
+          // Primero obtén la cuenta antes de eliminarla
+          const account = await accountService.getAccountById(accountId);
+          console.log(account);
+          const tableId = account.table.id; // Obtén el tableId de la cuenta
+
+          // Ahora elimina la cuenta
           const response = await accountService.deleteAccount(accountId);
-          console.log(response)
+          console.log('Respuesta de eliminación:', response);
+
+          // Actualiza el estado de la mesa
+          const table = await tablesService.getTableById(tableId);
+          table.tableStatus = 0;
+
+          await tablesService.updateTable(table);
+
           // Vuelve a cargar los productos después de la eliminación
           await this.loadAccounts();
         } catch (error) {
@@ -105,7 +118,8 @@ export default {
       } else {
         console.log("Deletion canceled.");
       }
-    },
+    }
+
   }
 }
 </script>

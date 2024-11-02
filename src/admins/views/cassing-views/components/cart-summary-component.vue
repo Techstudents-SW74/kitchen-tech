@@ -124,16 +124,27 @@ export default {
               table: { id: table.id },
               restaurantId: this.restaurantId,
               state: 0,
-              totalAccount: 0,
+              totalAccount: this.localTotal.toFixed(2),
               products: [],
             };
 
-            await accountService.addAccount(accountPayload);
-            table.tableStatus = 1;
-            await tablesService.updateTable(table);
+            const createdAccount = await accountService.addAccount(accountPayload);
 
-            this.$emit("save-sale", accountPayload);
-            this.closeModal();
+            if(createdAccount && createdAccount.id) {
+              table.tableStatus = 1;
+              await tablesService.updateTable(table);
+
+              for(const item of this.localCart) {
+                const accountProductPayload = {
+                  accountId: createdAccount.id,
+                  productId: item.id,
+                  quantity: item.quantity,
+                };
+                await accountService.addAccount(accountProductPayload);
+              }
+              this.$emit("save-sale", accountPayload);
+              this.closeModal();
+            }
           } else {
             alert("Table not found");
           }
