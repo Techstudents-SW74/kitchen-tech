@@ -70,9 +70,8 @@ export default {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 220px;
+  width: 280px;
   padding-top: 40px;
-  padding-right: 10px;
   background-color: #31304A;
   color: #F6F5FA;
   overflow-y: auto;
@@ -85,6 +84,7 @@ export default {
   font-size: 1.3rem;
   font-family: 'Red-hat-display', sans-serif;
 }
+
 .sidebar-button {
   width: 88%;
   text-align: left;
@@ -100,9 +100,11 @@ export default {
   transition: 0.3s;
   cursor: pointer;
 }
+
 .sidebar-button:hover {
   background-color: #5E5E99;
 }
+
 .active-button {
   background-color: #5E5E99;
 }

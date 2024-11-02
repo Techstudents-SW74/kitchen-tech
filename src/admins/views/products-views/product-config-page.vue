@@ -150,15 +150,35 @@ export default {
 .layout {
   display: flex;
   height: 100vh;
-  background-color: #F6F5FA;
+}
+.sidebar {
+  width: 280px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: #31304A;
 }
 .main-content {
-  margin-left: 255px; /* Desplaza el contenido a la derecha del sidebar */
+  margin-left: 280px; /* Desplaza el contenido a la derecha del sidebar */
   width: calc(100% - 280px); /* Ajusta el ancho para ocupar el resto de la pantalla */
   display: flex;
   flex-direction: column;
+}
+.header {
+  position: fixed;
+  top: 0;
+  background-color: #5E5E99;
+  z-index: 1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.page-container {
+  margin-top: 100px; /* Desplaza el contenido principal por debajo del header */
+  padding: 20px;
+  background-color: #F6F5FA; /* Fondo blanco para la zona de contenido */
+  height: calc(100vh - 100px); /* Ajusta el alto para evitar desbordamientos */
+  overflow-y: auto; /* Permite el scroll si el contenido es muy largo */
   font-family: 'Red Hat Display', sans-serif;
-  margin-top: 80px;
 }
 
 .title {
@@ -171,9 +191,9 @@ export default {
 }
 .card {
   background: #D3D2E5;
-  padding: 40px 50px;
+  padding: 30px 50px;
   border-radius: 5px;
-  max-width: 500px;
+  max-width: 1000px;
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
@@ -184,7 +204,7 @@ export default {
   display: flex;
   gap: 20px;
   flex: 1;
-  margin: 10px 0;
+  margin: 20px 0;
 }
 .form-field {
   flex: 1;
@@ -192,16 +212,15 @@ export default {
 .form-field label {
   font-weight: 700;
   color: #31304A;
-  margin: 0;
 }
 .form-field input {
   width: 100%;
-  padding: 10px;
-  font-size: 0.9rem;
+  padding: 12px;
+  font-size: 1rem;
   border: none;
   border-radius: 5px;
   color: #31304A;
-  margin: 5px 0;
+  margin: 10px 0;
   font-weight: 500;
   box-sizing: border-box;
   background: #F6F5FA;
@@ -209,7 +228,7 @@ export default {
 
 button{
   width: 100%;
-  margin: 20px 0 0 0;
+  margin: 0 0 16px 0;
   color: #F6F5FA;
   padding: 24px;
   background: #31304A;
@@ -218,8 +237,5 @@ button{
   border-radius: 5px;
   cursor: pointer;
   border: none;
-}
-button:active{
-  background-color: #201E35;
 }
 </style>

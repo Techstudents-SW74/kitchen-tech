@@ -83,37 +83,4 @@ export default {
   cursor: pointer;
 
 }
-
-@media (max-width: 1366px) {
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(50px, 100px));
-    gap: 10px;
-    max-width: 1000px;
-    width: 100%;
-    margin: 30px auto;
-    align-items: center;
-    justify-content: center;
-  }
-  .product-slot {
-    border: 1px dashed #31304A;
-    border-radius: 5px;
-    height: 70px;
-    max-width: 90px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .empty-slot button {
-    background-color: transparent;
-    color: #31304A;
-    border: none;
-    font-size: 1rem;
-    align-items: center;
-    align-self: center;
-    font-weight: bold;
-    cursor: pointer;
-
-  }
-}
 </style>

@@ -17,15 +17,17 @@
         <span class="total-account">S/.{{ account.totalAccount }}</span>
       </li>
     </ul>
-    <ul v-else-if="filteredAccounts === -1 && searchQuery" class="dropdown">
+    <ul v-else-if="accounts.length === 0 && searchQuery" class="dropdown">
       <li class="account-card">
         <div class="card-content">
-          <span>No account matches the query.</span>
+          <div class="no-products">
+            <label>You don't have created any product yet.</label>
+          </div>
         </div>
       </li>
     </ul>
-    <button :class="{ 'active-button': activeMode === 'tables' }" @click="toggleTablesMode">Tables</button>
-    <button :class="{ 'active-button': activeMode === 'accounts' }" @click="toggleAccountsMode">Accounts</button>
+    <button class="table-button" @click="toggleTablesMode">Show tables</button>
+    <button class="account-button" @click="toggleAccountsMode">Show Account</button>
   </div>
 </template>
 
@@ -38,21 +40,15 @@ export default {
       type: String,
       required: true,
     },
-    userRole: {
-      type: String,
-      required: true,
-    }
   },
   data() {
     return {
       searchQuery: '',
       accounts: [],
       filteredAccounts: [],
-      activeMode: 'accounts',
     };
   },
   beforeMount() {
-    this.activeMode = this.$route.path.includes("tables") ? 'tables' : 'accounts';
     if(this.restaurantName) {
       this.loadAccounts();
     } else {
@@ -77,19 +73,18 @@ export default {
       }
     },
     filterAccounts() {
-      const query = this.searchQuery.toLowerCase();
-      this.filteredAccounts = this.accounts.filter((account) =>
-          account.accountName.toLowerCase().includes(query)
-      );
-
-      // Verifica si no hay coincidencias
-      if (this.filteredAccounts.length === 0) {
-        this.filteredAccounts = -1; // Si quieres usar -1 para indicar que no hay resultados
+      try{
+        const query = this.searchQuery.toLowerCase();
+        this.filteredAccounts = this.accounts.filter((account) =>
+            account.accountName.toLowerCase().includes(query)
+        );
+      } catch (error){
+        console.log("There are not accounts to show")
       }
     },
     handleClickOutside(event) {
       if (!this.$el.contains(event.target)) {
-        this.filteredAccounts = 0;
+        this.filteredAccounts = [];
       }
     },
     onSearchFocus() {
@@ -97,11 +92,11 @@ export default {
         this.filterAccounts();
       }
     },
-    async toggleTablesMode() {
-      await this.$router.push(`/${this.restaurantName}/${this.userRole}/tables`)
+    toggleTablesMode() {
+      this.$emit('toggle-tables-mode');
     },
-    async toggleAccountsMode() {
-      await this.$router.push(`/${this.restaurantName}/${this.userRole}/saved-accounts`);
+    toggleAccountsMode() {
+      this.$emit('toggle-accounts-mode');
     },
   }
 }
@@ -157,11 +152,8 @@ export default {
   cursor: pointer;
 }
 
-.total-account{
-  font-size: 0.7rem;
-}
 .account-card{
-  padding: 20px;
+  padding: 10px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -190,20 +182,5 @@ button{
   cursor: pointer;
   font-weight: 800;
   flex-shrink: 0;
-  width: 120px;
-}
-button:hover {
-  background-color: #31304A;
-  color: #F6F5FA;
-  transition: 0.3s;
-  cursor: pointer;
-}
-button:active{
-  background-color: #201E35;
-  color: #F6F5FA;
-}
-.active-button {
-  color: #F6F5FA;
-  background: #31304A;
 }
 </style>
