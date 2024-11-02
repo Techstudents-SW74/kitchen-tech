@@ -59,7 +59,7 @@ export default {
         productName: '',
         category: '',
         productPrice: null,
-        restaurantId: null, // Agrega el restaurantId aquí
+        restaurantId: null,
       },
       isEdit: false,
     };
@@ -67,15 +67,15 @@ export default {
   beforeMount() {
     this.fetchUserData();
 
-    const userData = JSON.parse(localStorage.getItem('userData')); // Obtener los datos del usuario
-    const restaurantId = userData.restaurantId; // Obtener el restaurantId
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    const restaurantId = userData.restaurantId;
     console.log("id del restaurante:", restaurantId)
     if (userData) {
-      this.restaurantName = userData['business-name']; // O lo que sea necesario
+      this.restaurantName = userData['business-name'];
       this.userRole = userData.role;
     }
     if (restaurantId) {
-      this.product.restaurantId = restaurantId; // Asigna el restaurantId al producto
+      this.product.restaurantId = restaurantId;
     }
 
     if (this.$route.params.productId) {
@@ -101,8 +101,8 @@ export default {
 
     async loadProduct() {
       try {
-        const productId = this.$route.params.productId; // Obtén el ID del producto desde los parámetros de la ruta
-        const product = await productsService.getProductById(productId); // Llama al endpoint para obtener el producto
+        const productId = this.$route.params.productId;
+        const product = await productsService.getProductById(productId);
 
         if (product) {
           this.product = {
@@ -111,21 +111,42 @@ export default {
             productPrice: product.productPrice,
             productImageUrl: product.productImageUrl,
             category: product.category,
-            restaurantId: product.restaurantId, // Incluye esto si es necesario
+            restaurantId: product.restaurantId,
           };
         }
       } catch (error) {
         console.error("Failed to load product", error);
       }
     },
+
+    async checkProductNameExists(productName, restaurantId) {
+      try {
+        // Llama a `getProductsByRestaurant` para obtener los productos del restaurante
+        const products = await productsService.getProductsByRestaurant(restaurantId);
+
+        // Verifica si algún producto tiene el mismo nombre (ignora mayúsculas)
+        return products.some(product => product.productName.toLowerCase() === productName.toLowerCase());
+      } catch (error) {
+        console.error('Error checking product name:', error);
+        return false;
+      }
+    },
+
     async submitProduct() {
       this.product.productPrice = parseFloat(this.product.productPrice);
       this.product.restaurantId = Number(this.product.restaurantId);
 
+      // Verificar si el producto ya existe en el mismo restaurante
+      const productNameExists = await this.checkProductNameExists(this.product.productName, this.product.restaurantId);
+      if (productNameExists && !this.isEdit) {
+        alert('A product with this name already exists in this restaurant. Please choose a different name.');
+        return;
+      }
+
       try {
         const response = this.isEdit
-            ? await productsService.updateProduct(this.product)
-            : await productsService.addProduct(this.product);
+          ? await productsService.updateProduct(this.product)
+          : await productsService.addProduct(this.product);
 
         if (response) {
           alert(`Product ${this.isEdit ? 'updated' : 'created'} successfully.`);
@@ -139,14 +160,16 @@ export default {
         console.error('Error during product creation/update process:', error);
         alert('An error occurred: ' + (error.response ? error.response.data.message : error.message));
       }
-    }
+    },
   }
 }
 </script>
 
 
+
+
 <style scoped>
-/* Estilos que adaptan la vista a la region especifica de la pantalla */>
+/* Estilos que adaptan la vista a la region especifica de la pantalla */
 .layout {
   display: flex;
   height: 100vh;
