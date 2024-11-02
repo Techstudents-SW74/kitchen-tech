@@ -151,11 +151,11 @@ export default {
 
             const createdAccount = await accountService.addAccount(accountPayload);
 
-            if(createdAccount && createdAccount.id) {
+            if (createdAccount && createdAccount.id) {
               table.tableStatus = 1;
               await tablesService.updateTable(table);
 
-              for(const item of this.localCart) {
+              for (const item of this.localCart) {
                 const accountProductPayload = {
                   accountId: createdAccount.id,
                   productId: item.id,
@@ -163,9 +163,19 @@ export default {
                 };
                 await accountService.addAccountProduct(accountProductPayload);
               }
-              this.$emit("save-sale", accountPayload);
+
+              if (this.localCart.length > 0) {
+                this.$emit("account-updated", accountPayload);
+                localStorage.removeItem("cartData")
+                console.log("Emitiendo update")
+              } else {
+                this.$emit("save-sale", accountPayload);
+                localStorage.removeItem("cartData")
+                console.log("Emitiendo save")
+              }
+
               this.closeModal();
-              this.$router.push(`/${this.restaurantName}/${this.userRole}/saved-accounts`)
+              this.$router.push(`/${this.restaurantName}/${this.userRole}/saved-accounts`);
             }
           } else {
             alert("Table not found");

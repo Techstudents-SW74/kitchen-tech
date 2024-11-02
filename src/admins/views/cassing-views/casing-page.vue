@@ -35,6 +35,7 @@
               @charge="charge"
               @update-cart="handleUpdateCart"
               @update-summary="handleUpdateSummary"
+              @account-updated="handleAccountUpdated"
           />
         </div>
       </div>
@@ -163,6 +164,9 @@ export default {
       this.subtotal = subtotal;
       this.igv = igv;
       this.total = total;
+    },
+    handleAccountUpdated(){
+
     },
     charge() {
       // Lógica para procesar el cobro

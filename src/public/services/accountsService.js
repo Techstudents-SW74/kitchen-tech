@@ -51,8 +51,6 @@ export const accountService = {
                 products: account.products || []  // Lista de productos que puede estar vacía o con valores
             };
 
-            console.log("Payload a enviar:", payload); // Verifica la estructura de datos
-
             const response = await axiosInstance.post(`${API_URL}`, payload, {
                 headers: {
                     Authorization: `Bearer ${token}`
