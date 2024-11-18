@@ -61,17 +61,14 @@
     <div v-if="isSupplyConfigOpen" class="supply-config-overlay">
       <div class="supply-config-modal">
         <h2>Supply Configuration</h2>
-        
         <div class="form-group">
           <label for="supply-name">Supply Name</label>
           <input type="text" v-model="newSupplyName" id="supply-name" />
         </div>
-
         <div class="form-group">
           <label for="supply-category">Category</label>
           <input type="text" v-model="newSupplyCategory" id="supply-category" />
         </div>
-
         <div class="form-group">
           <label for="metric-unit">Metric Unit</label>
           <select v-model="newSupplyMetricUnit" id="metric-unit">
@@ -80,17 +77,14 @@
             </option>
           </select>
         </div>
-
         <div class="form-group">
           <label for="stock">Stock</label>
           <input type="number" v-model="newSupplyStock" id="stock" />
         </div>
-
         <div class="form-group">
           <label for="cost">Cost per Unit</label>
           <input type="number" v-model="newSupplyCostPerUnit" id="cost" />
         </div>
-
         <div class="form-group">
           <label for="state">State</label>
           <select v-model="newSupplyState" id="state">
@@ -99,7 +93,6 @@
             </option>
           </select>
         </div>
-
         <div class="modal-actions">
           <button class="close-button" @click="closeSupplyConfig">Close</button>
           <button @click="addSupply">{{ supplyToEdit ? 'Update' : 'Save' }}</button>
@@ -503,5 +496,29 @@ export default {
 
   .modal-actions button:hover {
     background-color: #45a049;
+  }
+
+  @media (max-width: 768px) {
+    .layout {
+      flex-direction: column;
+    }
+    .sidebar {
+      display: none;
+    }
+    .main-content {
+      margin-left: 0;
+    }
+    .supply-table th, .supply-table td {
+      font-size: 12px;
+    }
+    .add-button {
+      font-size: 12px;
+      padding: 8px;
+    }
+  }
+  @media (max-width: 480px) {
+    .search-bar {
+      width: 100%;
+    }
   }
 </style>
