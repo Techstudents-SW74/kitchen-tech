@@ -45,6 +45,7 @@ export const productsService = {
                 productImageUrl: product.productImageUrl,
                 category: product.category,
                 restaurantId: product.restaurantId,
+                supplies:product.supplies
             }, {
                 headers: {
                     Authorization: `Bearer ${token}` // Incluye el token en el encabezado
@@ -66,6 +67,7 @@ export const productsService = {
                 productImageUrl: product.productImageUrl,
                 category: product.category,
                 restaurantId: product.restaurantId,
+                supplies:product.supplies
             }, {
                 headers: {
                     Authorization: `Bearer ${token}` // Incluye el token en el encabezado
