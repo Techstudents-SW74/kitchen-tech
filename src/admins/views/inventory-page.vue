@@ -171,7 +171,7 @@ export default {
 
       try {
         const supplies = await supplyService.getSuppliesByRestaurant(restaurantId);
-        this.supplies = supplies;
+        this.supplies = Array.isArray(supplies) ? supplies : [];
         this.filteredSupplies = this.supplies;
       } catch (error) {
         console.error("Failed to load supplies", error);
@@ -194,16 +194,22 @@ export default {
         return;
       }
 
-      const isNameTaken = this.supplies.some(supply => supply.supplyName.toLowerCase() === this.newSupplyName.toLowerCase());
-      if (isNameTaken) {
-        alert("A supply with this name already exists.");
-        return;
-      }
-
       if (this.supplyToEdit) {
         // Si estamos editando, actualiza el suministro existente
         await this.updateSupply();
       } else {
+
+        if (!Array.isArray(this.supplies)) {
+          console.error("Supplies no es array");
+          this.supplies = []; // Reinicializa como un array vacío si es necesario
+        }
+
+        /*const isNameTaken = this.supplies.some(supply => supply.supplyName.toLowerCase() === this.newSupplyName.toLowerCase());
+        if (isNameTaken) {
+          alert("A supply with this name already exists.");
+          return;
+        }*/
+
         // Crear un nuevo suministro
         const newSupply = {
           supplyName: this.newSupplyName,
@@ -376,6 +382,7 @@ export default {
     font-weight: 800;
     flex-shrink: 0;
   }
+  
   .supply-table-container {
     width: 100%;
     max-width: 1000px;
@@ -398,22 +405,34 @@ export default {
   .supply-table td {
     vertical-align: middle;
   }
+  
   .edit-button,
   .delete-button {
-    padding: 5px 10px;
+    padding: 8px 12px;
     margin: 0 5px;
     border: none;
-    border-radius: 3px;
+    border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
   }
+
   .edit-button {
-    background-color: #c7ab10;
+    background-color: #5E5E99;
     color: white;
   }
+
+  .edit-button:hover {
+    background-color: #4B4A78;
+  }
+
   .delete-button {
     background-color: #FF6347;
     color: white;
+  }
+
+  .delete-button:hover {
+    background-color: #E0533C;
   }
 
   /* Supply Config Overlay Styles */
@@ -474,28 +493,31 @@ export default {
 
   .close-button {
     padding: 10px 20px;
-    background-color: #f2f2f2;
-    color: #333;
+    background-color: #D3D2E5;
+    color: #31304A;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: all 0.3s ease;
   }
 
   .close-button:hover {
-    background-color: #e0e0e0;
+    background-color: #B5B4CC;
   }
 
   .modal-actions button {
     padding: 10px 20px;
-    background-color: #4CAF50;
+    background-color: #5E5E99;
     color: white;
     border: none;
     border-radius: 5px;
+    font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
   }
 
   .modal-actions button:hover {
-    background-color: #45a049;
+    background-color: #4B4A78;
   }
 
   @media (max-width: 768px) {
