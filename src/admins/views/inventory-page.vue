@@ -210,6 +210,8 @@ export default {
           return;
         }*/
 
+        if (!this.validateSupplyData()) return;
+
         // Crear un nuevo suministro
         const newSupply = {
           supplyName: this.newSupplyName,
@@ -277,14 +279,7 @@ export default {
 
     async updateSupply() {
 
-      if (!Object.values(this.SupplyState).includes(this.newSupplyState)) {
-        alert("Invalid supply state selected.");
-        return;
-      }
-      if (!Object.values(this.MetricUnit).includes(this.newSupplyMetricUnit)) {
-        alert("Invalid metric unit selected.");
-        return;
-      }
+      if (!this.validateSupplyData()) return;
 
       const updatedSupply = {
         id: this.supplyToEdit.id,
@@ -315,16 +310,46 @@ export default {
     },
 
     async deleteSupply(id) {
-      try {
-        // Llamada al servicio para eliminar el suministro
-        await supplyService.deleteSupply(id);
+      const confirmation = window.confirm("Are you sure you want to delete this supply?");
+      
+      if (confirmation) {
+        try {
+          // Llamada al servicio para eliminar el suministro
+          await supplyService.deleteSupply(id);
 
-        // Eliminarlo del arreglo local
-        this.supplies = this.supplies.filter(supply => supply.id !== id);
-        this.filteredSupplies = this.filteredSupplies.filter(supply => supply.id !== id);
-      } catch (error) {
-        console.error("Error deleting supply:", error);
+          // Eliminarlo del arreglo local
+          this.supplies = this.supplies.filter(supply => supply.id !== id);
+          this.filteredSupplies = this.filteredSupplies.filter(supply => supply.id !== id);
+        } catch (error) {
+          console.error("Error deleting supply:", error);
+        }
       }
+    },
+
+    validateSupplyData() {
+      const errors = [];
+      
+      if (!this.newSupplyName) errors.push("Supply Name is required.");
+      if (!this.newSupplyCategory) errors.push("Category is required.");
+      if (!this.newSupplyMetricUnit || !Object.values(this.MetricUnit).includes(this.newSupplyMetricUnit)) {
+        errors.push("Invalid Metric Unit.");
+      }
+      if (this.newSupplyStock === null || this.newSupplyStock < 0) {
+        errors.push("Stock must be a non-negative number.");
+      }
+      if (this.newSupplyCostPerUnit === null || this.newSupplyCostPerUnit < 0) {
+        errors.push("Cost per Unit must be a non-negative number.");
+      }
+      if (!this.newSupplyState || !Object.values(this.SupplyState).includes(this.newSupplyState)) {
+        errors.push("Invalid Supply State.");
+      }
+      
+      if (errors.length > 0) {
+        alert(errors.join("\n")); // Mostrar errores al usuario
+        return false;
+      }
+      
+      return true; // Todos los datos son válidos
     }
     
   },
