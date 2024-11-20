@@ -60,42 +60,44 @@
     <!-- Supply Config Overlay -->
     <div v-if="isSupplyConfigOpen" class="supply-config-overlay">
       <div class="supply-config-modal">
-        <h2>Supply Configuration</h2>
-        <div class="form-group">
-          <label for="supply-name">Supply Name</label>
-          <input type="text" v-model="newSupplyName" id="supply-name" />
-        </div>
-        <div class="form-group">
-          <label for="supply-category">Category</label>
-          <input type="text" v-model="newSupplyCategory" id="supply-category" />
-        </div>
-        <div class="form-group">
-          <label for="metric-unit">Metric Unit</label>
-          <select v-model="newSupplyMetricUnit" id="metric-unit">
-            <option v-for="(unit, key) in MetricUnit" :key="key" :value="unit">
-              {{ unit }}
-            </option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="stock">Stock</label>
-          <input type="number" v-model="newSupplyStock" id="stock" />
-        </div>
-        <div class="form-group">
-          <label for="cost">Cost per Unit</label>
-          <input type="number" v-model="newSupplyCostPerUnit" id="cost" />
-        </div>
-        <div class="form-group">
-          <label for="state">State</label>
-          <select v-model="newSupplyState" id="state">
-            <option v-for="(state, key) in SupplyState" :key="key" :value="state">
-              {{ state }}
-            </option>
-          </select>
-        </div>
-        <div class="modal-actions">
-          <button class="close-button" @click="closeSupplyConfig">Close</button>
-          <button @click="addSupply">{{ supplyToEdit ? 'Update' : 'Save' }}</button>
+        <p class="modal-title">{{ supplyToEdit ? 'Edit Supply' : 'Add Supply'}}</p>
+        <div class="modal-content">
+          <div class="form-group">
+            <label for="supply-name">Supply Name</label>
+            <input type="text" v-model="newSupplyName" id="supply-name" />
+          </div>
+          <div class="form-group">
+            <label for="supply-category">Category</label>
+            <input type="text" v-model="newSupplyCategory" id="supply-category" />
+          </div>
+          <div class="form-group">
+            <label for="metric-unit">Metric Unit</label>
+            <select class="selector" v-model="newSupplyMetricUnit" id="metric-unit">
+              <option class="option" v-for="(unit, key) in MetricUnit" :key="key" :value="unit">
+                {{ unit }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="stock">Stock</label>
+            <input type="number" v-model="newSupplyStock" id="stock" />
+          </div>
+          <div class="form-group">
+            <label for="cost">Cost per Unit</label>
+            <input type="number" v-model="newSupplyCostPerUnit" id="cost" />
+          </div>
+          <div class="form-group">
+            <label for="state">State</label>
+            <select class="selector" v-model="newSupplyState" id="state">
+              <option class="option" v-for="(state, key) in SupplyState" :key="key" :value="state">
+                {{ state }}
+              </option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button class="button" @click="closeSupplyConfig">Close</button>
+            <button class="button" @click="addSupply">{{ supplyToEdit ? 'Update' : 'Save' }}</button>
+          </div>
         </div>
       </div>
     </div>
@@ -357,215 +359,226 @@ export default {
 </script>
 
 <style scoped>
+.layout {
+  display: flex;
+  height: 100vh;
+  background-color: #F6F5FA;
+}
+.main-content {
+  margin-left: 255px;
+  width: calc(100% - 280px);
+  display: flex;
+  flex-direction: column;
+}
+.page-container {
+  margin-top: 70px;
+  padding: 20px;
+  background-color: #F6F5FA;
+  height: calc(100vh - 100px);
+  font-family: 'Red Hat Display', sans-serif;
+}
+.no-supplies {
+  text-align: center;
+  color: #31304A;
+}
+.supplies-header {
+  display: flex;
+  max-width: 1000px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  gap: 10px;
+}
+.search-bar {
+  width: 100%;
+  padding: 15px;
+  border-radius: 5px;
+  border: none;
+  color: #31304A;
+  background-color: #D3D2E5;
+  max-width: 1000px;
+}
+.add-button {
+  padding: 13px 20px;
+  background: #D3D2E5;
+  color: #31304A;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.supply-table-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto;
+}
+.supply-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.supply-table th, .supply-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #D3D2E5;
+}
+.supply-table th {
+  background-color: #D3D2E5;
+  color: #31304A;
+}
+.supply-table td {
+  vertical-align: middle;
+}
+
+.edit-button,
+.delete-button {
+  padding: 8px 12px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-button {
+  background-color: #5E5E99;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #4B4A78;
+}
+
+.delete-button {
+  background-color: #FF6347;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #E0533C;
+}
+
+/* Supply Config Overlay Styles */
+.supply-config-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  font-family: 'Red-hat-display', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.supply-config-modal {
+  background-color: #F6F5FA;
+  padding: 20px;
+  border-radius: 8px;
+  width: 50%;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+}
+.modal-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 10%;
+}
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: #31304A;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+}
+.selector{
+  border-radius: 5px;
+  background-color: #D3D2E5;
+  border: none;
+  padding: 10px;
+  color: #31304A;
+  font-size: 1.2rem;
+}
+.option{
+  font-size: 0.8rem;
+  padding: 10px;
+  margin-top: 10px;
+}
+.form-group label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #31304A;
+  margin-bottom: 5px;
+  display: block;
+  max-width: 200px;
+}
+.form-group input {
+  max-width: 768px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #D3D2E5;
+  font-size: 1.2rem;
+  color: #31304A;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.button {
+  padding: 10px 20px;
+  background-color: #31304A;
+  color: #F6F5FA;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+.button:active {
+  background-color: #201E35;
+}
+
+@media (max-width: 768px) {
   .layout {
-    display: flex;
-    height: 100vh;
-    background-color: #F6F5FA;
-  }
-  .main-content {
-    margin-left: 255px;
-    width: calc(100% - 280px);
-    display: flex;
     flex-direction: column;
   }
-  .page-container {
-    margin-top: 70px;
-    padding: 20px;
-    background-color: #F6F5FA;
-    height: calc(100vh - 100px);
-    font-family: 'Red Hat Display', sans-serif;
+  .sidebar {
+    display: none;
   }
-  .no-supplies {
-    text-align: center;
-    color: #31304A;
-  }
-  .supplies-header {
-    display: flex;
-    max-width: 1000px;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 auto;
-    padding-bottom: 10px;
-    gap: 10px;
-  }
-  .search-bar {
-    width: 100%;
-    padding: 15px;
-    border-radius: 5px;
-    border: none;
-    color: #31304A;
-    background-color: #D3D2E5;
-    max-width: 1000px;
-  }
-  .add-button {
-    padding: 13px 20px;
-    background: #D3D2E5;
-    color: #31304A;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 800;
-    flex-shrink: 0;
-  }
-  
-  .supply-table-container {
-    width: 100%;
-    max-width: 1000px;
-    margin: 20px auto;
-  }
-  .supply-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+  .main-content {
+    margin-left: 0;
   }
   .supply-table th, .supply-table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #D3D2E5;
+    font-size: 12px;
   }
-  .supply-table th {
-    background-color: #D3D2E5;
-    color: #31304A;
+  .add-button {
+    font-size: 12px;
+    padding: 8px;
   }
-  .supply-table td {
-    vertical-align: middle;
+}
+@media (max-width: 480px) {
+  .search-bar {
+    width: 100%;
   }
-  
-  .edit-button,
-  .delete-button {
-    padding: 8px 12px;
-    margin: 0 5px;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .edit-button {
-    background-color: #5E5E99;
-    color: white;
-  }
-
-  .edit-button:hover {
-    background-color: #4B4A78;
-  }
-
-  .delete-button {
-    background-color: #FF6347;
-    color: white;
-  }
-
-  .delete-button:hover {
-    background-color: #E0533C;
-  }
-
-  /* Supply Config Overlay Styles */
-  .supply-config-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-
-  .supply-config-modal {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 50%;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
-  }
-
-  .form-group {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-
-  .form-group label {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 5px;
-    display: block;
-  }
-
-  .form-group input {
-    width: 90%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    color: #333;
-  }
-
-  .modal-actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .close-button {
-    padding: 10px 20px;
-    background-color: #D3D2E5;
-    color: #31304A;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .close-button:hover {
-    background-color: #B5B4CC;
-  }
-
-  .modal-actions button {
-    padding: 10px 20px;
-    background-color: #5E5E99;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .modal-actions button:hover {
-    background-color: #4B4A78;
-  }
-
-  @media (max-width: 768px) {
-    .layout {
-      flex-direction: column;
-    }
-    .sidebar {
-      display: none;
-    }
-    .main-content {
-      margin-left: 0;
-    }
-    .supply-table th, .supply-table td {
-      font-size: 12px;
-    }
-    .add-button {
-      font-size: 12px;
-      padding: 8px;
-    }
-  }
-  @media (max-width: 480px) {
-    .search-bar {
-      width: 100%;
-    }
-  }
+}
 </style>
