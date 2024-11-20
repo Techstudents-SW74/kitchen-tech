@@ -85,6 +85,10 @@ export default {
     this.loadProducts();
     this.loadCart();
   },
+  beforeUnmount() {
+    localStorage.removeItem("cartData")
+    localStorage.removeItem("accountData")
+  },
   methods: {
     loadCart() {
       this.cart = JSON.parse(localStorage.getItem('cartData')) || [];

@@ -137,6 +137,7 @@ export default {
           quantity: p.quantity,
           showInputs: false
         }));
+        localStorage.setItem('accountData', JSON.stringify(accountData))
         localStorage.setItem('cartData', JSON.stringify(this.cart))
 
         this.$router.push(`/${this.restaurantName}/${this.userRole}/casing`)
