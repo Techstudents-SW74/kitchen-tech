@@ -146,6 +146,11 @@ export default {
     },
 
     addProductToCart(product) {
+      if (!product.productPrice || product.productPrice <= 0) {
+        alert(`The product "${product.productName}" must have a valid price.`);
+        return;
+      }
+
       const existingItem = this.cart.find(item => item.id === product.id);
       if (existingItem) {
         existingItem.quantity += 1;

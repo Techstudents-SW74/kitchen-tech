@@ -48,7 +48,6 @@ export default {
       required: true
     }
   },
-
   data() {
     return {
       accountName: "",
@@ -58,7 +57,6 @@ export default {
       existingAccountData: null
     };
   },
-
   watch: {
     isVisible(newVal) {
       if (newVal) {
@@ -71,7 +69,6 @@ export default {
       }
     },
   },
-
   methods: {
     loadExistingData() {
       const accountData = JSON.parse(localStorage.getItem('accountData'));
@@ -85,7 +82,6 @@ export default {
         this.existingAccountData = null;
       }
     },
-
     handleAccountNameInput(event) {
       if (!this.isUpdate) {
         const prefix = `Mesa: ${this.tableNumber}`;
@@ -96,8 +92,7 @@ export default {
         this.accountName = `${prefix} ${this.manualAccountName}`;
       }
     },
-
-    async updateExistingAccount() {
+    /*async updateExistingAccount() {
       try {
         const cartData = JSON.parse(localStorage.getItem('cartData')) || [];
 
@@ -109,8 +104,10 @@ export default {
           totalAccount: cartData.reduce((total, item) => total + (item.price * item.quantity), 0),
           // Incluir la lista completa de productos actualizada
           products: cartData.map(product => ({
-            id: product.id,
+            productId: product.id,
             quantity: product.quantity,
+            productName: product.productName,
+            price: product.price,
             accountId: this.existingAccountData.id
           }))
         };
@@ -125,17 +122,54 @@ export default {
         console.error('Error updating account:', error);
         alert('Error updating account. Please try again.');
       }
+    },*/
+    async updateExistingAccount() {
+      try {
+        // Obtener los productos del carrito desde localStorage
+        const cartData = JSON.parse(localStorage.getItem('cartData')) || [];
+
+        // Paso 1: Eliminar la cuenta existente
+        await accountService.deleteAccount(this.existingAccountData.id);
+
+        // Paso 2: Crear una nueva cuenta con los datos actuales
+        const newAccountPayload = {
+          accountName: this.accountName,
+          clientId: this.existingAccountData.client?.id || null,
+          table: this.existingAccountData.table, // Mantener la misma mesa
+          restaurantId: this.restaurantId,
+          state: this.existingAccountData.state, // Mantener el mismo estado
+          totalAccount: cartData.reduce((total, item) => total + (item.price * item.quantity), 0),
+          products: cartData.map(product => ({
+            productId: product.id,
+            price: product.price,
+            quantity: product.quantity
+          }))
+        };
+
+        console.log(newAccountPayload);
+
+        await accountService.addAccount(newAccountPayload);
+
+        // Limpiar datos del carrito
+        localStorage.removeItem('cartData');
+
+        // Emitir evento para actualizar el frontend
+        this.$emit('account-updated');
+        this.resetFields();
+      } catch (error) {
+        console.error('Error recreando la cuenta:', error);
+        alert('Error actualizando la cuenta. Por favor, inténtalo nuevamente.');
+      }
     },
-    
     async save() {
       if (this.isUpdate) {
         await this.updateExistingAccount();
+        this.$router.push(`/${this.restaurantName}/${this.userRole}/saved-accounts`);
       } else {
         this.$emit("save-sale", this.accountName, this.tableNumber);
       }
       this.closeModal();
     },
-
     resetFields() {
       this.accountName = "";
       this.tableNumber = "";
@@ -143,7 +177,6 @@ export default {
       this.isUpdate = false;
       this.existingAccountData = null;
     },
-
     closeModal() {
       this.resetFields();
       this.$emit("close-modal");

@@ -108,14 +108,14 @@ export default {
     },
     validateQuantity(index) {
       const item = this.localCart[index];
-      if (item.quantity === 0 || item.quantity === "") {
+      if (item.quantity === 0 || item.quantity === "" || item.quantity < 1) {
         item.quantity = 1;
       }
       this.updateItemTotal(index);
     },
     validatePrice(index) {
       const item = this.localCart[index];
-      if (item.price === 0 || item.price === "") {
+      if (!item.price || item.price <= 0) {
         item.price = 1;
       }
       this.updateItemTotal(index);
@@ -135,6 +135,14 @@ export default {
     async saveOrder(accountName, tableNumber) {
       if (accountName || tableNumber) {
         try {
+          // Validar que todos los productos tengan un precio válido
+          for (const item of this.localCart) {
+            if (!item.price || item.price <= 0) {
+              alert(`The product "${item.productName}" must have a valid price.`);
+              return;
+            }
+          }
+
           const tables = await tablesService.getTablesByRestaurant(this.restaurantId);
           const table = tables.find(t => String(t.tableNumber) === String(tableNumber));
 
@@ -166,11 +174,9 @@ export default {
 
               if (this.localCart.length > 0) {
                 this.$emit("account-updated", accountPayload);
-                console.log("Emitiendo update")
               } else {
                 this.$emit("save-sale", accountPayload);
-                localStorage.removeItem("cartData")
-                console.log("Emitiendo save")
+                localStorage.removeItem("cartData");
               }
 
               this.closeModal();
