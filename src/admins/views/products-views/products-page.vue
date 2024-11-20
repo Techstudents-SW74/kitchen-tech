@@ -6,16 +6,7 @@
       <div class="page-container">
         <main class="products-page">
           <div class="content-wrapper">
-            <div class="products-header">
-              <input
-                  class="search-bar"
-                  type="text"
-                  v-model="searchQuery"
-                  placeholder="Search products..."
-                  @input="filterProducts"
-              />
-              <button class="add-button" @click="addProduct">Add Product</button>
-            </div>
+            
             <div class="product-cards">
               <template v-if="products.length === 0">
                 <div class="no-products">
