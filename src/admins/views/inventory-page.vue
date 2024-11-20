@@ -484,13 +484,17 @@ export default {
   width: 50%;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
 }
 .modal-content{
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 0 10%;
+  max-width: 800px;
+  align-self: center;
 }
 .modal-title {
   font-size: 1.5rem;
@@ -505,6 +509,7 @@ export default {
   justify-content: center;
   display: flex;
   flex-direction: column;
+  min-width: 800px;
   max-width: 800px;
 }
 .selector{
@@ -529,7 +534,7 @@ export default {
   max-width: 200px;
 }
 .form-group input {
-  max-width: 768px;
+  max-width: 800px;
   padding: 10px;
   border-radius: 5px;
   border: none;
