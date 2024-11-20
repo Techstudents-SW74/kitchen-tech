@@ -166,7 +166,6 @@ export default {
 
               if (this.localCart.length > 0) {
                 this.$emit("account-updated", accountPayload);
-                localStorage.removeItem("cartData")
                 console.log("Emitiendo update")
               } else {
                 this.$emit("save-sale", accountPayload);

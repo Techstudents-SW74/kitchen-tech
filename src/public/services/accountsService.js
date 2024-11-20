@@ -79,6 +79,37 @@ export const accountService = {
             throw error;
         }
     },
+    async updateAccount(accountData) {
+        try {
+            const token = getAuthToken();
+            const response = await axiosInstance.put(`${API_URL}/${accountData.id}`, accountData, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error updating account:', error.response ? error.response.data : error.message);
+            throw error;
+        }
+    },
+    async updateAccountProduct(accountId, productId, quantity) {
+        try {
+            const token = getAuthToken();
+            const response = await axiosInstance.put(`${API_URL}/${accountId}/product/${productId}`,
+                { quantity },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error('Error updating account product:', error.response ? error.response.data : error.message);
+            throw error;
+        }
+    },
     async deleteAccount(accountId) {
         try {
             const token = getAuthToken();
@@ -91,6 +122,20 @@ export const accountService = {
         } catch (error) {
             console.error('Error deleting product:', error.response ? error.response.data : error.message);
             throw error; // Lanza el error para manejarlo en la llamada
+        }
+    },
+    async deleteAccountProduct(accountId, productId) {
+        try {
+            const token = getAuthToken();
+            const response = await axiosInstance.delete(`${API_URL}/${accountId}/product/${productId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error deleting account product:', error.response ? error.response.data : error.message);
+            throw error;
         }
     },
 }
