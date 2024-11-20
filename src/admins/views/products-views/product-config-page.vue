@@ -7,33 +7,7 @@
         <div class="page-header">
           <p class="title">{{ isEdit ? 'Edit Product' : 'Add New Product' }}</p>
         </div>
-        <div class="card">
-          <form @submit.prevent="submitProduct">
-            <div class="form-field">
-              <label for="name">Product Name</label>
-              <input type="text" v-model="product.productName" required />
-            </div>
-
-            <div class="form-row">
-              <div class="form-field">
-                <label for="category">Product Category</label>
-                <input type="text" v-model="product.category" required />
-              </div>
-
-              <div class="form-field">
-                <label for="price">Product Price</label>
-                <input type="number" v-model="product.productPrice" required />
-              </div>
-            </div>
-
-            <div class="form-field">
-              <label for="imageUrl">Product Image URL</label>
-              <input type="text" v-model="product.productImageUrl" />
-            </div>
-
-            <button type="submit">{{ isEdit ? 'Save Changes' : 'Add Product' }}</button>
-          </form>
-        </div>
+        
       </div>
     </div>
   </div>
