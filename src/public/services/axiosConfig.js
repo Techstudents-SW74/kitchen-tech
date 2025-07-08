@@ -1,12 +1,10 @@
-// src/public/services/axiosConfig.js
-import axios from "axios";
-
-const API_URL = 'http://localhost:8081/api/kitchentech/v1'; // URL base
+import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: API_URL,
+    baseURL: '/api', // Esto asegura que las solicitudes pasen por el proxy
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
-
-// Aquí puedes configurar interceptores si es necesario
 
 export default axiosInstance;
